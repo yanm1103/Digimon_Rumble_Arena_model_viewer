@@ -5,6 +5,7 @@ import { MONSTERS } from "./catalog.js";
 import { mergeGlb } from "./glbmerge.js";
 import { createArena } from "./arena.js";
 import { createSfx } from "./sfx.js";
+import { createTitleBackground } from "./titlebg.js";
 
 const BASE = import.meta.env.BASE_URL;
 // the game's menu sounds (src/sfx.js); on unless the visitor turned them off (About panel)
@@ -1669,7 +1670,7 @@ const SHORTCUTS = {
   h: () => setShowcase(!inShowcase()),
 };
 window.addEventListener("keydown", (e) => {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (splashOn || e.ctrlKey || e.metaKey || e.altKey) return; // the first screen only has START
   if (e.key === "Escape" && inShowcase()) {
     setShowcase(false);
     e.preventDefault();
@@ -1708,13 +1709,41 @@ soundGroup.addEventListener("click", (e) => {
 });
 const volumeInput = $("volume");
 const volumeOut = $("v-volume");
+const splashVolume = $("splash-volume");
+const splashVolumeOut = $("splash-volume-out");
 function setVolume(percent, save = true) {
   sfx.volume = percent / 100;
-  volumeInput.value = percent;
-  volumeOut.textContent = `${percent}%`;
+  volumeInput.value = splashVolume.value = percent;
+  volumeOut.textContent = splashVolumeOut.textContent = `${percent}%`;
   if (save) remember("volume", String(percent));
 }
 volumeInput.addEventListener("input", () => setVolume(Number(volumeInput.value)));
+
+// ---- the first screen: the volume (the same one as in the About panel; moving it up turns the sounds on) and START, which hides it
+const splash = $("splash");
+const splashStart = $("splash-start");
+let splashOn = true;
+splashVolume.addEventListener("input", () => {
+  setVolume(Number(splashVolume.value));
+  if (!sfx.on && Number(splashVolume.value) > 0) setSound(true);
+});
+// the title screen's tunnel behind it (src/titlebg.js); without WebGL the hexagons of its CSS stay
+let splashBackground = null;
+try {
+  splashBackground = createTitleBackground($("splash-bg"), BASE);
+  splashBackground.start();
+} catch (e) {
+  console.error(e);
+}
+splashStart.addEventListener("click", () => {
+  splashOn = false;
+  splash.classList.add("leaving");
+  setTimeout(() => {
+    splash.hidden = true;
+    splashBackground?.stop();
+  }, 450);
+});
+splashStart.focus({ preventScroll: true });
 document.addEventListener(
   "click",
   (e) => {
@@ -1727,6 +1756,11 @@ document.addEventListener(
   },
   true,
 );
+// the cursor sound as the mouse moves over the Digimon, tile by tile (a finger has no hover)
+monsterList.addEventListener("pointerover", (e) => {
+  const tile = e.target.closest(".tile");
+  if (e.pointerType === "mouse" && tile && tile !== e.relatedTarget?.closest?.(".tile")) sfx.play("cursor");
+});
 document.addEventListener("input", (e) => {
   if (e.target.matches?.('input[type="range"]') && e.target.id !== "frame") sfx.play("step");
 });

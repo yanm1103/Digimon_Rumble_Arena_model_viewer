@@ -2540,3 +2540,138 @@ header .btn {
 #pnl-scene .group + .group {
   margin-top: 6px;
 }
+
+/* ---- the first screen: over everything, the game's teal hexagons; the three titles one under the other, a steel card with the volume
+   (like the loose texts) and a big green START pill. Sizes follow the shorter of the width and the height of the window. */
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at center, transparent 40%, #00000070),
+    linear-gradient(#00000038, #00000038),
+    url("/ui/menu-tile.png") center / 458px 80px repeat;
+  background-color: var(--dra-teal);
+  image-rendering: pixelated;
+  transition: opacity 0.4s;
+}
+
+#splash[hidden] {
+  display: none;
+}
+
+#splash.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#splash-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#splash .inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2.4vh, 22px);
+  margin: auto;
+  padding: 16px;
+}
+
+#splash img {
+  display: block;
+  height: auto;
+  filter: drop-shadow(0 3px 0 #00000080);
+}
+
+#splash .s-digimon {
+  width: min(80vw, 39vh);
+}
+
+#splash .s-rumble {
+  width: min(80vw, 52vh);
+}
+
+#splash .s-viewer {
+  width: min(88vw, 70vh);
+}
+
+#splash .card {
+  --c: 12px;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-sizing: border-box;
+  width: min(440px, 86vw);
+  margin-top: clamp(4px, 1.5vh, 14px);
+  padding: 18px 26px;
+  background: var(--plate-mid);
+  color: #fff;
+  font: 700 12px var(--mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  clip-path: polygon(var(--c) 0, calc(100% - var(--c)) 0, 100% var(--c), 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, var(--c) 100%, 0 calc(100% - var(--c)), 0 var(--c));
+}
+
+#splash .card::before,
+#splash .card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  background: var(--plate-dark);
+  clip-path: polygon(calc(var(--c) - 1px) 0, calc(100% - var(--c) + 1px) 0, 100% calc(var(--c) - 1px), 100% calc(100% - var(--c) + 1px), calc(100% - var(--c) + 1px) 100%, calc(var(--c) - 1px) 100%, 0 calc(100% - var(--c) + 1px), 0 calc(var(--c) - 1px));
+}
+
+#splash .card::after {
+  inset: 4px;
+  background: var(--window);
+  clip-path: polygon(calc(var(--c) - 2px) 0, calc(100% - var(--c) + 2px) 0, 100% calc(var(--c) - 2px), 100% calc(100% - var(--c) + 2px), calc(100% - var(--c) + 2px) 100%, calc(var(--c) - 2px) 100%, 0 calc(100% - var(--c) + 2px), 0 calc(var(--c) - 2px));
+}
+
+#splash .card input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--dra-orange);
+}
+
+#splash .card output {
+  min-width: 4ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#splash .start {
+  margin-top: clamp(4px, 1.5vh, 14px);
+  padding: clamp(14px, 2.4vh, 22px) clamp(48px, 9vh, 84px);
+  border: 0;
+  border-radius: 999px;
+  background: var(--dra-green);
+  box-shadow: var(--ring-green), 0 4px 0 #0006;
+  color: #fff;
+  font: 700 clamp(22px, 3.6vh, 32px) Arial, "Helvetica Neue", Helvetica, sans-serif;
+  letter-spacing: 6px;
+  text-indent: 6px;
+  cursor: pointer;
+}
+
+#splash .start:hover {
+  filter: brightness(1.12);
+}
+
+#splash .start:active {
+  transform: translateY(2px);
+}
+
+/* the shortcuts and the page behind it don't exist while it is up */
+body:has(#splash:not([hidden]):not(.leaving)) #app {
+  visibility: hidden;
+}

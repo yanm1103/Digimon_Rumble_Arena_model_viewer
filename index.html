@@ -322,6 +322,23 @@
       </footer>
     </div>
 
+    <!-- the first screen: the three titles one under the other, a metal card with the volume and the START button. The viewer loads
+         behind it; the click on START is also what lets the page make sound (src/main.js, splash) -->
+    <div id="splash" role="dialog" aria-modal="true" aria-label="Digimon Rumble Arena Model Viewer">
+      <canvas id="splash-bg" aria-hidden="true"></canvas>
+      <div class="inner">
+        <img class="s-digimon" src="/ui/logo-digimon.png" alt="Digimon" />
+        <img class="s-rumble" src="/ui/logo-rumble.png" alt="Rumble Arena" />
+        <img class="s-viewer" src="/ui/logo-viewer.png" alt="Model Viewer" />
+        <label class="card">
+          <span>Volume</span>
+          <input type="range" id="splash-volume" min="0" max="100" step="5" />
+          <output id="splash-volume-out"></output>
+        </label>
+        <button id="splash-start" class="start" type="button">START</button>
+      </div>
+    </div>
+
     <!-- showcase mode: everything else is hidden, so this is the way out on touch screens (fades away when idle) -->
     <button id="showcase-exit" type="button" aria-label="Exit showcase mode" title="Exit showcase mode (H / Esc)">
       <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></svg>

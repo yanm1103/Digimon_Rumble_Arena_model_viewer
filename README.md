@@ -65,6 +65,15 @@ the previous / next frame), pause and code (a picture or a video was saved). The
 how a VAB is laid out and how the speed of each sound follows from its tone (about 16 kHz, and 7.1 kHz for pause and code). `src/sfx.js` plays them with Web Audio
 after the first click or key (browsers allow nothing before), and the About panel turns them off or sets their volume (remembered in this browser).
 
+## First screen
+
+The page opens on a splash screen over the title screen's background: the tunnel of circuit boards of `title_logo.c` (`src/titlebg.js`). Rings 6 of 33
+points (radius 64 doubling to 2048, 64 units apart in z), 5 x 32 panels between them, each showing a 16 texel slice of a 192 x 64 strip of `title.tim`
+(`export_ui.py` cuts it to `public/ui/title-tunnel.png`, as colour numbers, and `src/titletunnel.js`, the CLUT); the strip scrolls by 2 texels a tick, the
+tunnel turns by a sine that swings it back and forth every 34 seconds, and colours 0 and 15 of the CLUT pulse green (a turn in 64 ticks), as in the game
+(30 ticks a second). The splash only has the game's tunnel, not its logo's entrance, its sparkles or its tunnel lines. START hides it, and its click is what
+lets the page make sound.
+
 ## Other colors
 
 Every character except Calumon has a second costume, "other colors": the game does not store a second texture, it tints every
