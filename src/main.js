@@ -450,8 +450,8 @@ surfaceGroup.addEventListener("click", (e) => {
   if (chip) setSurface(chip.dataset.v);
 });
 
-// This game's triangles agree with their vertex normals once the winding is fixed at export (tools/export_glb.py), but every
-// material is still double-sided, like the other viewers. But
+// This game's triangles agree with their vertex normals once the winding is fixed at export (tools/export_glb.py). The
+// .glb materials are double-sided, like the other viewers', but makeMaterial draws front faces only, like the game. But
 // three.js turns the normal around on a triangle it sees from the back (by its winding), which lit half the faces from
 // the wrong side. The game uses the normal as it is, and so does this: the flip is taken out of the shader. (Flat
 // shading doesn't read these normals: it takes one from the screen, always facing the camera.)
@@ -470,7 +470,10 @@ function makeMaterial(original, skinned) {
     vertexColors: original.vertexColors,
     transparent: original.transparent,
     alphaTest: original.alphaTest,
-    side: original.side,
+    // Single-sided, like the game: every TMD primitive has the double-sided flag off and the GTE drops back faces (nclip), so
+    // the artists made two-sided parts (Seraphimon's wings) as a front quad plus a back quad with the same vertices. Drawing
+    // both sides (the .glb says doubleSided) puts the two copies at the same depth and they z-fight.
+    side: THREE.FrontSide,
     depthWrite: original.depthWrite,
     opacity: original.opacity,
     polygonOffset: true,
