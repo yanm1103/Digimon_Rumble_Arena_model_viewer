@@ -29,8 +29,11 @@ writes
                                     a dark window. The "OPTIONS" text is painted out and the grey steel recoloured to the blue steel of the
                                     main menu's plates (header, footer, player), so the site's metal is one family. Shown with border-image
                                     (52 px ends, the middle stretches)
-  public/icons/<prefix>.png         the 24x24 face of each Digimon in the select screen's grid (the grid is one 288x116 picture,
-                                    charasel.tim image 6; cell -> character from GRID_CELLS)
+  public/icons/<prefix>.png         the 28x28 face of each Digimon in the select screen's grid (the grid is one 288x116 picture,
+                                    charasel.tim image 6; cell -> character from GRID_CELLS). The grid lines are 2 px (one #8463ce, one #39297b)
+                                    shared by neighbours; cells sit 30 px apart (28 + 2)
+  public/ui/tray-*.png              the grid's white metal tray (same picture): left/right edges (4 px), top edge (8 px; the two blocks with the
+                                    slits, and one plain column to repeat between them) and bottom edge (10 px; two corners and a plain column)
 The big portraits (public/logos) come from export_glb.py --icons.
 """
 import argparse
@@ -258,6 +261,18 @@ def option_banner(path, out_dir):
     print("banner: %dx%d" % (img[0], img[1]))
 
 
+def tray_pieces(grid, out_dir):
+    """The white tray around the select grid (charasel.tim image 6): its edges as small pictures the CSS lays out around any number of cells."""
+    pieces = {
+        "tray-l": (4, 55, 4, 1), "tray-r": (280, 55, 4, 1),
+        "tray-top-l": (4, 3, 40, 8), "tray-top-r": (246, 3, 38, 8), "tray-top-m": (10, 3, 1, 8),
+        "tray-bot-l": (4, 103, 10, 10), "tray-bot-r": (274, 103, 10, 10), "tray-bot-m": (60, 103, 1, 10),
+        "tray-dot": (38, 41, 2, 2),  # the gold 2x2 dot where grid lines cross
+    }
+    for name, (x, y, cw, ch) in pieces.items():
+        save(os.path.join(out_dir, "ui", name + ".png"), crop(grid, x, y, cw, ch))
+
+
 MENU_PERIOD = (229, 40)
 
 EDGE_ALPHA = 56  # 22% black: the band's colours are 0.78 x the pattern's
@@ -353,9 +368,10 @@ def main():
         frame[2] = bytes(px)
         save(os.path.join(a.out, "ui", name + ".png"), tuple(frame))
     grid = decode(cs[6])
+    tray_pieces(grid, a.out)
     for cell, cid in enumerate(CELL_CHARACTER):
         x, y = cell_position(cell)
-        save(os.path.join(a.out, "icons", G.CHARACTERS[cid][0].lower() + ".png"), crop(grid, x + 2, y + 2, 24, 24))
+        save(os.path.join(a.out, "icons", G.CHARACTERS[cid][0].lower() + ".png"), crop(grid, x + 2, y + 2, 28, 28))
     if a.menu:
         menu_background(a.menu, a.out)
     if a.option:

@@ -3,10 +3,9 @@
 // costumes: 0 = the game's colours, 1 = the other colours (the game tints every palette with a per-character HSV tint when both
 // sides would look alike; tools/export_glb.py applies the same tint). Calumon has no other colors.
 // zoom: camera dolly per character (wide wings or weapons make the framing box wide).
-// The list shows public/icons/<prefix>.png (the face in the select screen's grid) and the stage the name picture
+// The list shows public/icons/<prefix>.png (the face in the select screen's grid, 28x28) and the stage the name picture
 // public/names/<prefix>.png; public/logos/<prefix>.png is the big art (bottom right of the stage). Calumon has none of them in the
-// game: public/logos/calumon.png was drawn by hand, and he has `smooth: true` (not pixel art) and `nameImage: false` (his
-// name is text).
+// game: his icon (28x28, same style) and public/logos/calumon.png were drawn by hand, and he has `nameImage: false` (his name is text).
 export const MONSTERS = [
   { prefix: "AGUMON", name: "Agumon", costumes: [0, 1], labels: ["default", "other colors"] },
   { prefix: "GALLANTMON", name: "Gallantmon", costumes: [0, 1], labels: ["default", "other colors"], zoom: 1.2 },
@@ -32,5 +31,5 @@ export const MONSTERS = [
   { prefix: "WARGREYMON", name: "WarGreymon", costumes: [0, 1], labels: ["default", "other colors"] },
   { prefix: "REAPERMON", name: "Reapermon", costumes: [0, 1], labels: ["default", "other colors"] },
   { prefix: "BLACKWARGREYMON", name: "BlackWarGreymon", costumes: [0, 1], labels: ["default", "other colors"] },
-  { prefix: "CALUMON", name: "Calumon", costumes: [0], zoom: 1.2, smooth: true, nameImage: false },
+  { prefix: "CALUMON", name: "Calumon", costumes: [0], zoom: 1.2, nameImage: false },
 ];

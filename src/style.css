@@ -1430,21 +1430,68 @@ header h1 .logo-rumble {
   filter: drop-shadow(0 1px 2px #000a);
 }
 
-/* the list on the left, as in the select screen: each Digimon's face (24 px, shown at 3x) in a two-tone violet cell, and around the
-   picked one the orange "player 1" selector of the game (public/ui/select-frame.png, 32 px, shown at 3x = 96 px, no badge). The cells sit
-   30 px apart in the game (28 px cell + 2 px), so 90 px here, and the 96 px selector overlaps its neighbours */
+/* the list on the left, as in the select screen. In the game each face is 28 px, the cells sit 30 px apart and the 2 px between two cells
+   is ONE line (a #8463ce pixel and a #39297b pixel) that both of them use, with a gold 2x2 dot where lines cross. Shown at 3x: a
+   tile is 96 px (face 84 + a 6 px line all round) and the grid advances 90 px, so neighbours overlap by exactly one line. Around it all
+   the white metal tray of the game (public/ui/tray-*.png: edges 4 px at the sides, 8 on top with its slits, 10 at the bottom), and
+   around the picked one the orange "player 1" selector (32 px shown at 3x = 96 px, the tile's own size). */
 #monster-list {
-  grid-template-columns: repeat(auto-fill, 90px);
-  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  width: 300px;
+  margin: 0 auto;
+  padding: 24px 18px 30px 12px;
+  grid-template-columns: repeat(3, 90px);
+  grid-auto-rows: 90px;
+  justify-content: start;
   gap: 0;
+  image-rendering: pixelated;
+  background:
+    url("/ui/tray-l.png") 0 24px / 12px calc(100% - 54px) no-repeat,
+    url("/ui/tray-r.png") 100% 24px / 12px calc(100% - 54px) no-repeat;
+}
+
+/* the top edge: the block with the slits at each end (their ends are the tray's chamfered corners) and the plain edge between */
+#monster-list::before,
+#monster-list::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+#monster-list::before {
+  top: 0;
+  height: 24px;
+  padding: 0 114px 0 120px;
+  background:
+    url("/ui/tray-top-l.png") left top / 120px 24px no-repeat,
+    url("/ui/tray-top-r.png") right top / 114px 24px no-repeat,
+    url("/ui/tray-top-m.png") 0 0 / 3px 24px repeat-x;
+  background-origin: border-box, border-box, content-box;
+  background-clip: border-box, border-box, content-box;
+}
+
+#monster-list::after {
+  bottom: 0;
+  height: 30px;
+  padding: 0 30px;
+  background:
+    url("/ui/tray-bot-l.png") left top / 30px 30px no-repeat,
+    url("/ui/tray-bot-r.png") right top / 30px 30px no-repeat,
+    url("/ui/tray-bot-m.png") 0 0 / 3px 30px repeat-x;
+  background-origin: border-box, border-box, content-box;
+  background-clip: border-box, border-box, content-box;
 }
 
 .tile.monster {
-  --cell: #8463ce; /* the cell's outer line, then #39297b */
   position: relative;
-  width: 90px;
-  height: 90px;
-  padding: 3px;
+  width: 96px;
+  height: 96px;
+  margin: 0 -6px -6px 0;
+  padding: 6px;
   overflow: visible;
   background: none;
   border: 0;
@@ -1453,29 +1500,33 @@ header h1 .logo-rumble {
 }
 
 .tile.monster img {
-  width: 100%;
-  height: 100%;
+  display: block;
+  width: 84px;
+  height: 84px;
   aspect-ratio: auto;
-  padding: 6px;
+  padding: 0;
   object-fit: cover;
   image-rendering: pixelated;
   background: var(--dra-navy);
-  border-radius: 7px;
+  border-radius: 0;
 }
 
-.tile.monster img.smooth {
-  image-rendering: auto;
-  object-fit: contain;
-}
-
+/* the tile's line on all four sides (the neighbour's overlaps it exactly) and the gold dot in each corner */
 .tile.monster::before {
   content: "";
   position: absolute;
-  inset: 3px;
-  border: 3px solid var(--cell);
-  border-radius: 7px;
-  box-shadow: inset 0 0 0 3px #39297b;
+  inset: 0;
   pointer-events: none;
+  background:
+    url("/ui/tray-dot.png") 0 0 / 6px 6px no-repeat,
+    url("/ui/tray-dot.png") 100% 0 / 6px 6px no-repeat,
+    url("/ui/tray-dot.png") 0 100% / 6px 6px no-repeat,
+    url("/ui/tray-dot.png") 100% 100% / 6px 6px no-repeat,
+    linear-gradient(#8463ce 0 3px, #39297b 3px 6px) 6px 0 / calc(100% - 12px) 6px no-repeat,
+    linear-gradient(#8463ce 0 3px, #39297b 3px 6px) 6px 100% / calc(100% - 12px) 6px no-repeat,
+    linear-gradient(90deg, #8463ce 0 3px, #39297b 3px 6px) 0 6px / 6px calc(100% - 12px) no-repeat,
+    linear-gradient(90deg, #8463ce 0 3px, #39297b 3px 6px) 100% 6px / 6px calc(100% - 12px) no-repeat;
+  image-rendering: pixelated;
 }
 
 .tile.monster:hover img {
@@ -1483,18 +1534,15 @@ header h1 .logo-rumble {
 }
 
 .tile.monster.on {
+  z-index: 1;
   border: 0;
   box-shadow: none;
-}
-
-.tile.monster.on {
-  z-index: 1;
 }
 
 .tile.monster.on::after {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: 0;
   background: url("/ui/select-frame.png") 0 0 / 100% 100% no-repeat;
   image-rendering: pixelated;
   pointer-events: none;
@@ -1979,7 +2027,7 @@ header #kofi {
 .tile.monster:hover:not(.on)::after {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: 0;
   background: url("/ui/hover-frame.png") 0 0 / 100% 100% no-repeat;
   image-rendering: pixelated;
   pointer-events: none;

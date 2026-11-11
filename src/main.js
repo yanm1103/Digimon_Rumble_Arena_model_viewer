@@ -178,11 +178,10 @@ MONSTERS.forEach((m, i) => {
   tile.title = m.name;
   tile.dataset.i = i;
   const img = document.createElement("img");
-  img.src = m.smooth ? `${BASE}logos/${m.prefix.toLowerCase()}.png` : `${BASE}icons/${m.prefix.toLowerCase()}.png`;
+  img.src = `${BASE}icons/${m.prefix.toLowerCase()}.png`;
   img.alt = m.name;
-  img.width = img.height = 24;
+  img.width = img.height = 28;
   img.decoding = "async";
-  if (m.smooth) img.classList.add("smooth");
   tile.append(img);
   monsterList.append(tile);
 });

@@ -50,7 +50,7 @@ What the formats are:
 the two logos (`public/ui`: the RUMBLE ARENA picture is stored as two halves 48 empty columns apart, which are joined),
 the orange player-1 selector frame (`public/ui/select-frame.png`, the "1" badge painted out; shown around the picked Digimon) and the cyan player-2 one (`hover-frame.png`, the hover),
 each Digimon's name as the select screen writes it (`public/names`), and the face of each Digimon in the select screen's grid
-(`public/icons`, 24x24, cell -> character from `GRID_CELLS`). `public/logos` is the big art (`export_glb.py --icons`), shown
+(`public/icons`, 28x28, cell -> character from `GRID_CELLS`; the cells sit 30 px apart and share their 2 px lines, as the list does), plus the grid's white metal tray (`public/ui/tray-*.png`). `public/logos` is the big art (`export_glb.py --icons`), shown
 bottom right of the stage. Names are the US ones (Gallantmon, Magnadramon, Beelzemon, Omnimon, MegaGargomon, Gatomon, Veemon,
 Reapermon): the decomp uses the Japanese ones. Both menus use the main menu's own background (`--menu`: `public/ui/menu-tile.png`, the hexagons that say DIGIMON, repeating every 229x40 px,
 rebuilt from the 512x480 picture, and `menu-edge-left/right.png`, the dark side layer with circles that shrink away from the border,
