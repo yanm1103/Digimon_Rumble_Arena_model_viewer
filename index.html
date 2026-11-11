@@ -179,6 +179,18 @@
 
           <div id="pnl-scene">
             <div class="section">
+              <h3>Stage</h3>
+              <div class="group" style="--n: 2" id="stage-group">
+                <button class="chip" type="button" data-v="off" title="Plain background and floor grid (B)">Plain</button>
+                <button class="chip" type="button" data-v="boss" title="The Boss arena, round 1 (B)">Boss</button>
+              </div>
+              <div class="group" style="--n: 2" id="stage-parts" hidden>
+                <button class="chip" type="button" data-k="lattice" title="The floor's lines, which cycle through the colors">Lines</button>
+                <button class="chip" type="button" data-k="bands" title="The four bands that turn slowly around the arena">Bands</button>
+              </div>
+              <small>The last stage as it looks in round 1: black, with the floor lines and the turning bands. Plain keeps your color and grid.</small>
+            </div>
+            <div class="section">
               <h3>Background</h3>
               <label class="opt" id="color-row">
                 <span>Color</span>
@@ -257,6 +269,7 @@
                 <dt><kbd>W</kbd> <kbd>S</kbd></dt><dd>Costume</dd>
                 <dt><kbd>A</kbd> <kbd>D</kbd></dt><dd>Animation</dd>
                 <dt><kbd>G</kbd></dt><dd>Floor grid</dd>
+                <dt><kbd>B</kbd></dt><dd>Boss arena</dd>
                 <dt><kbd>R</kbd></dt><dd>Lighting</dd>
                 <dt><kbd>F</kbd></dt><dd>Smooth / flat shading</dd>
                 <dt><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></dt><dd>Mesh / wireframe / bones / portrait</dd>

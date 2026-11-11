@@ -2550,3 +2550,17 @@ header .btn {
 #drawer .anim-group.fade:first-child {
   margin-top: 0;
 }
+
+/* Stage section: the arena parts only show while the Boss arena is on; the color picker is moot then (the arena is black) */
+#stage-parts {
+  margin-top: 6px;
+}
+
+#stage-parts[hidden] {
+  display: none;
+}
+
+#color-row.moot {
+  opacity: 0.4;
+  pointer-events: none;
+}

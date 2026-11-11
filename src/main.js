@@ -3,6 +3,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { MONSTERS } from "./catalog.js";
 import { mergeGlb } from "./glbmerge.js";
+import { createArena } from "./arena.js";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -78,6 +79,13 @@ grid.rotation.x = -Math.PI / 2;
 grid.renderOrder = -1; // first among the see-through things: the monster's fire and wireframe go over it
 grid.frustumCulled = false;
 scene.add(grid);
+
+// The Boss arena (round 1), an alternative to the plain background and grid (src/arena.js). stageOn is read by the camera
+// limits and by the background, so it lives here with the scene.
+const arena = createArena(BASE);
+scene.add(arena.group);
+let stageOn = false;
+const STAGE_DOLLY = 2.2; // the game's camera is farther from the fighters than the viewer's close-up framing: back off in the arena
 
 // size: the monster's framing box (largest side): the grid reaches about three times that around the center
 function placeGrid(size) {
@@ -265,11 +273,57 @@ const colorInput = $("bg-color");
 
 // ---- floor grid on / off
 const gridGroup = $("grid-group");
+let gridWanted = true; // the visitor's choice; the grid is hidden anyway while the Boss arena is on
 function setGrid(on) {
-  grid.visible = on;
+  gridWanted = on;
+  grid.visible = on && !stageOn;
   for (const chip of gridGroup.children) chip.classList.toggle("on", (chip.dataset.v === "on") === on);
   remember("grid", on ? "on" : "off");
 }
+
+// ---- stage: plain (color + grid) or the Boss arena, whose lines and bands can be turned off one by one
+const stageGroup = $("stage-group");
+const stagePartsGroup = $("stage-parts");
+const stageParts = { lattice: true, bands: true };
+function showStage(on) {
+  const was = stageOn;
+  stageOn = on;
+  for (const chip of stageGroup.children) chip.classList.toggle("on", (chip.dataset.v === "boss") === on);
+  stagePartsGroup.hidden = !on;
+  colorInput.parentElement.classList.toggle("moot", on);
+  arena.group.visible = on;
+  grid.visible = gridWanted && !on;
+  if (limitDist && was !== on) {
+    const k = on ? STAGE_DOLLY : 1 / STAGE_DOLLY;
+    camera.position.sub(controls.target).multiplyScalar(k).add(controls.target);
+    baseDist *= k;
+    cameraLimits(limitDist * k);
+  }
+}
+async function setStage(on) {
+  showStage(on);
+  remember("stage", on ? "boss" : "plain");
+  if (!on) return;
+  try {
+    await arena.load();
+  } catch {
+    showStage(false); // the arena files did not come: back to the plain stage
+  }
+}
+function setStagePart(key, on) {
+  stageParts[key] = on;
+  (key === "lattice" ? arena.setLattice : arena.setBands)(on);
+  for (const chip of stagePartsGroup.children) if (chip.dataset.k === key) chip.classList.toggle("on", on);
+  remember("stage-" + key, on ? "on" : "off");
+}
+stageGroup.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (chip) setStage(chip.dataset.v === "boss");
+});
+stagePartsGroup.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (chip) setStagePart(chip.dataset.k, !stageParts[chip.dataset.k]);
+});
 gridGroup.addEventListener("click", (e) => {
   const chip = e.target.closest(".chip");
   if (chip) setGrid(chip.dataset.v === "on");
@@ -596,12 +650,14 @@ function slack() {
   return 1 / Math.min(camera.aspect, 1);
 }
 
+let limitDist = 0;
 function cameraLimits(dist) {
+  limitDist = dist;
   camera.near = dist * 0.05;
-  camera.far = dist * 6;
+  camera.far = stageOn ? Math.max(dist * 6, arena.far) : dist * 6; // the arena is far bigger than a monster
   camera.updateProjectionMatrix();
   controls.minDistance = dist * 0.3;
-  controls.maxDistance = dist * 3;
+  controls.maxDistance = dist * (stageOn ? 12 : 3);
   controls.update();
 }
 
@@ -618,7 +674,7 @@ function frame(root, mixer, clip, zoom) {
   const center = box.getCenter(new THREE.Vector3());
   const side = Math.max(...box.getSize(new THREE.Vector3()).toArray(), 1e-3);
   placeGrid(side);
-  baseDist = (side * 0.8) / Math.tan(THREE.MathUtils.degToRad(FOVY / 2)) / zoom;
+  baseDist = ((side * 0.8) / Math.tan(THREE.MathUtils.degToRad(FOVY / 2)) / zoom) * (stageOn ? STAGE_DOLLY : 1);
   const dist = baseDist * slack();
 
   // game: camera at c + (sin yaw cos pitch, cos yaw cos pitch, sin pitch) * dist, Z up; here Y up (x, z, -y)
@@ -906,8 +962,12 @@ async function saveImage(transparent) {
   // screen's size, all at once (the next frame redraws the screen)
   let out;
   const gridShown = grid.visible;
+  const arenaShown = arena.group.visible;
   try {
-    if (transparent) grid.visible = false; // only the monster in a picture with no background
+    if (transparent) {
+      grid.visible = false; // only the monster in a picture with no background
+      arena.group.visible = false;
+    }
     if (k > 1) renderer.setPixelRatio(BASE_PIXEL_RATIO * k);
     const w = canvas.width;
     const h = canvas.height;
@@ -922,6 +982,7 @@ async function saveImage(transparent) {
     }
   } finally {
     grid.visible = gridShown;
+    arena.group.visible = arenaShown;
     if (k > 1) renderer.setPixelRatio(BASE_PIXEL_RATIO);
   }
   const blob = await new Promise((r) => out.toBlob(r, "image/png"));
@@ -1591,7 +1652,8 @@ const SHORTCUTS = {
   r: () => stepSelect(selLight, 1),
   f: () => setShading(flatShading() ? "smooth" : "flat"),
   v: () => setSurface(SURFACES[(SURFACES.indexOf(surface) + 1) % SURFACES.length]),
-  g: () => setGrid(!grid.visible),
+  g: () => setGrid(!gridWanted),
+  b: () => setStage(!stageOn),
   1: () => toggleLayer("mesh"),
   2: () => toggleLayer("wire"),
   3: () => toggleLayer("bones"),
@@ -1645,7 +1707,7 @@ function resize() {
 
 // background color, then the 3D scene
 function draw(solid = null) {
-  renderer.setClearColor(solid ?? backgroundColor, 1);
+  renderer.setClearColor(solid ?? (stageOn ? 0x000000 : backgroundColor), 1);
   renderer.clear();
   if (current) current.root.updateMatrixWorld();
   renderer.render(scene, camera);
@@ -1661,6 +1723,7 @@ renderer.setAnimationLoop(() => {
     showFrame();
   }
   checkRecording();
+  arena.update(now / 1000, canvas.width, canvas.height);
   lastTime = now;
   controls.update(dt); // the time step keeps the showcase's turn at the same speed on any refresh rate
   if (current) {
@@ -1681,6 +1744,9 @@ if (!savedLayers && oldMode) savedLayers = { mesh: oldMode !== "wire", wire: old
 for (const key in layerState) setLayer(key, savedLayers ? !!savedLayers[key] : layerState[key]);
 renderDrawers();
 setGrid(recall("grid") !== "off");
+setStagePart("lattice", recall("stage-lattice") !== "off");
+setStagePart("bands", recall("stage-bands") !== "off");
+setStage(recall("stage") === "boss");
 setPortraitOn(recall("portrait") !== "off", false);
 setPortraitSmooth(recall("portrait-filter") !== "off", false);
 setShading(shading);
