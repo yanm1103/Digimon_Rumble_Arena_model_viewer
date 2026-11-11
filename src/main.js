@@ -281,16 +281,16 @@ function setGrid(on) {
   remember("grid", on ? "on" : "off");
 }
 
-// ---- stage: plain (color + grid) or the Boss arena, whose lines and bands can be turned off one by one
+// ---- stage: plain (color + grid) or the Boss arena, whose lines and bands can be turned on and off one by one. The "Background"
+// section shows the options of the stage that is on (the color and grid for plain, the lines and bands for the arena).
 const stageGroup = $("stage-group");
-const stagePartsGroup = $("stage-parts");
-const stageParts = { lattice: true, bands: true };
+const partGroups = { lattice: $("lines-group"), bands: $("bands-group") };
+const stageParts = { lattice: true, bands: false };
 function showStage(on) {
   const was = stageOn;
   stageOn = on;
   for (const chip of stageGroup.children) chip.classList.toggle("on", (chip.dataset.v === "boss") === on);
-  stagePartsGroup.hidden = !on;
-  colorInput.parentElement.classList.toggle("moot", on);
+  for (const el of document.querySelectorAll("#pnl-scene [data-for]")) el.hidden = (el.dataset.for === "boss") !== on;
   arena.group.visible = on;
   grid.visible = gridWanted && !on;
   if (limitDist && was !== on) {
@@ -313,17 +313,19 @@ async function setStage(on) {
 function setStagePart(key, on) {
   stageParts[key] = on;
   (key === "lattice" ? arena.setLattice : arena.setBands)(on);
-  for (const chip of stagePartsGroup.children) if (chip.dataset.k === key) chip.classList.toggle("on", on);
+  for (const chip of partGroups[key].children) chip.classList.toggle("on", (chip.dataset.v === "on") === on);
   remember("stage-" + key, on ? "on" : "off");
 }
 stageGroup.addEventListener("click", (e) => {
   const chip = e.target.closest(".chip");
   if (chip) setStage(chip.dataset.v === "boss");
 });
-stagePartsGroup.addEventListener("click", (e) => {
-  const chip = e.target.closest(".chip");
-  if (chip) setStagePart(chip.dataset.k, !stageParts[chip.dataset.k]);
-});
+for (const key in partGroups) {
+  partGroups[key].addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (chip) setStagePart(key, chip.dataset.v === "on");
+  });
+}
 gridGroup.addEventListener("click", (e) => {
   const chip = e.target.closest(".chip");
   if (chip) setGrid(chip.dataset.v === "on");
@@ -1071,37 +1073,35 @@ function checkRecording() {
 
 recordButton.addEventListener("click", () => (recording ? stopRecording(true) : startRecording()));
 
-// ---- drawers. The left rail opens the drawer with what to show (monsters, animations), the right rail the panel with how
-// to show it (model, scene, lighting, picture). On a phone (the same rule as style.css) the open one is a sheet under the
-// stage, and only one fits at a time: opening one closes the other.
+// ---- drawers. One rail: its first icons open the drawer with what to show (monsters, animations), the rest the panel with
+// how to show it (model, scene, lighting, picture). Only one is open at a time: opening one closes the other. On a computer
+// it sits next to the rail; on a phone (the same rule as style.css) it is a sheet under the stage.
 const mobile = matchMedia("(max-width: 760px), (pointer: coarse) and (max-height: 520px)");
 const landscape = matchMedia("(pointer: coarse) and (max-height: 520px) and (orientation: landscape)");
 const drawer = $("drawer");
 const panel = $("panel");
 const rail = $("rail");
-const railRight = $("rail-right");
 const TABS = { monsters: "Digimon", anims: "Animations" };
 const PANELS = { model: "Model", scene: "Scene", light: "Lighting", photo: "Picture and video", about: "About" };
 const ui = {
   tab: recall("tab") in TABS ? recall("tab") : "monsters",
   open: recall("drawer") !== "closed",
-  // first visit on a computer: the backgrounds are open too
-  pnl: recall("panel") ?? (mobile.matches ? "" : "scene"),
+  pnl: recall("panel") ?? "",
 };
 if (!(ui.pnl in PANELS)) ui.pnl = "";
-if (mobile.matches && ui.open) ui.pnl = "";
+if (ui.open) ui.pnl = "";
 
 function renderDrawers() {
   drawer.hidden = !ui.open;
   for (const t in TABS) $(`tab-${t}`).hidden = t !== ui.tab;
   $("drawer-title").textContent = TABS[ui.tab];
   $("drawer-num").textContent = ui.tab === "anims" && animSorted.length ? animShown().length : "";
-  for (const b of rail.querySelectorAll(".ico")) b.classList.toggle("on", ui.open && b.dataset.tab === ui.tab);
+  for (const b of rail.querySelectorAll("[data-tab]")) b.classList.toggle("on", ui.open && b.dataset.tab === ui.tab);
 
   panel.hidden = !ui.pnl;
   for (const p in PANELS) $(`pnl-${p}`).hidden = p !== ui.pnl;
   $("panel-title").textContent = PANELS[ui.pnl] ?? "";
-  for (const b of railRight.querySelectorAll(".ico")) b.classList.toggle("on", b.dataset.pnl === ui.pnl);
+  for (const b of rail.querySelectorAll("[data-pnl]")) b.classList.toggle("on", b.dataset.pnl === ui.pnl);
 }
 
 function saveDrawers() {
@@ -1117,7 +1117,7 @@ function openTab(tab) {
     ui.tab = tab;
     ui.open = true;
   }
-  if (ui.open && mobile.matches) ui.pnl = "";
+  if (ui.open) ui.pnl = "";
   saveDrawers();
   renderDrawers();
   if (ui.open) reveal(drawer.querySelector(`#tab-${ui.tab} .on`) ?? drawer);
@@ -1125,25 +1125,19 @@ function openTab(tab) {
 
 function openPanel(p) {
   ui.pnl = ui.pnl === p ? "" : p;
-  if (ui.pnl && mobile.matches) ui.open = false;
+  if (ui.pnl) ui.open = false;
   saveDrawers();
   renderDrawers();
 }
 
 rail.addEventListener("click", (e) => {
   const b = e.target.closest(".ico");
-  if (b) openTab(b.dataset.tab);
-});
-railRight.addEventListener("click", (e) => {
-  const b = e.target.closest(".ico");
-  if (b) openPanel(b.dataset.pnl);
+  if (!b) return;
+  if (b.dataset.tab) openTab(b.dataset.tab);
+  else openPanel(b.dataset.pnl);
 });
 $("drawer-close").addEventListener("click", () => openTab(ui.tab));
 $("panel-close").addEventListener("click", () => openPanel(ui.pnl));
-// turned into a phone (narrow window) with both open: keep the left one
-mobile.addEventListener("change", () => {
-  if (mobile.matches && ui.open && ui.pnl) openPanel(ui.pnl);
-});
 
 // Sheet height on phones: dragging its top (the small bar or the title) makes it taller or shorter; remembered in this
 // browser
@@ -1562,7 +1556,7 @@ frameSlider.addEventListener("input", () => {
 // ---- showcase mode: the interface goes away and the camera slowly circles the monster. The shortcuts keep working
 // (H or Esc leaves); on touch screens a round button in the corner leaves, and fades out when nobody touches anything.
 // the game's gold titles, written with the game's own system font (public/ui/font.png, positions in gamefont.js): every letter is a
-// small box that shows its glyph through a mask and fades from gold on its left to dark on its right (.fade in style.css). The titles
+// small box that shows its glyph through a mask, in plain gold (.fade in style.css). The titles
 // of the drawers, the animation groups and the player's name are written by the code above, so a watcher wraps whatever shows up there.
 const FADE_TITLES = ".section > h3, .head > span:first-child, .anim-group, #anim-name";
 function fadeLetters(root) {
@@ -1745,7 +1739,7 @@ for (const key in layerState) setLayer(key, savedLayers ? !!savedLayers[key] : l
 renderDrawers();
 setGrid(recall("grid") !== "off");
 setStagePart("lattice", recall("stage-lattice") !== "off");
-setStagePart("bands", recall("stage-bands") !== "off");
+setStagePart("bands", recall("stage-bands") === "on");
 setStage(recall("stage") === "boss");
 setPortraitOn(recall("portrait") !== "off", false);
 setPortraitSmooth(recall("portrait-filter") !== "off", false);

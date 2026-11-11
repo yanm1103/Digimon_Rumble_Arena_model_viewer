@@ -19,6 +19,11 @@ const TICK = 30;
 const HUE_TURN = 0x600;
 const POINTS_X = 18;
 const POINTS_Z = 12;
+// The game only has rows in front of the fighters (j = 0..11, fading to black at the far end: that is why the floor looks endless
+// there) and its camera never looks back. Here the camera orbits, so the same rows are repeated mirrored behind the first one
+// (j = -11..-1) and the floor fades to black that way too.
+const ROWS = 2 * POINTS_Z - 1;
+const ROW_ZERO = POINTS_Z - 1; // index of j = 0
 const PITCH_X = 0x3c3;
 const PITCH_Z = 0x5d1;
 const START_X = -0x2000;
@@ -79,12 +84,12 @@ function buildLattice() {
   const pos = [];
   const owner = []; // per vertex: the point it takes its colour from, or -1 for the black end of a drop
   const P = (i, j) => [START_X + i * PITCH_X, 0, START_Z + j * PITCH_Z];
-  const id = (i, j) => i * POINTS_Z + j;
+  const id = (i, j) => i * ROWS + ROW_ZERO + j;
   const seg = (a, ia, b, ib) => {
     pos.push(...a, ...b);
     owner.push(ia, ib);
   };
-  for (let j = 0; j < POINTS_Z - 1; j++) {
+  for (let j = -ROW_ZERO; j < POINTS_Z - 1; j++) {
     for (let r = 0; r < POINTS_X - 1; r++) {
       const p0 = P(r, j);
       const p1 = P(r + 1, j);
@@ -189,13 +194,13 @@ export function createArena(base) {
     const ticks = seconds * TICK;
     if (lattice.lines.visible) {
       const hue = (ticks * 8) % HUE_TURN;
-      const cache = new Array(POINTS_X * POINTS_Z);
+      const cache = new Array(POINTS_X * ROWS);
       const { owner, colors, buffer } = lattice;
       for (let v = 0; v < owner.length; v++) {
         const point = owner[v];
         let c = [0, 0, 0];
         if (point >= 0) {
-          c = cache[point] ??= hsv(hue, BRIGHTNESS[(point / POINTS_Z) | 0][point % POINTS_Z]);
+          c = cache[point] ??= hsv(hue, BRIGHTNESS[(point / ROWS) | 0][Math.abs((point % ROWS) - ROW_ZERO)]);
         }
         colors[v * 3] = c[0];
         colors[v * 3 + 1] = c[1];
