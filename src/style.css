@@ -1,0 +1,2090 @@
+/* Look and layout copied from the GrandChase model viewer (tools/visualizador/estilo.css): flat dark panels, thin borders,
+   small corner radius, monospaced labels, one accent color. */
+:root {
+  --bg: #111214;
+  --panel: #17181b;
+  --panel2: #1d1f23;
+  --border: #2a2c31;
+  --border2: #3a3d44;
+  --text: #e8e8ea;
+  --muted: #8b8f97;
+  --soft-text: #c9ccd2;
+  --accent: #f0a32a;
+  --on-accent: #16131b; /* dark text over the orange accent */
+  --accent-bg: color-mix(in srgb, var(--accent) 24%, #141518);
+  --accent-border: color-mix(in srgb, var(--accent) 45%, #141518);
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+select,
+input {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+select {
+  padding: 6px 6px;
+  width: 100%;
+}
+
+svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---- page grid: header / rail, drawer, stage, panel, rail / footer. Each part has its own column, so a hidden drawer
+   doesn't move the others. */
+#app {
+  display: grid;
+  grid-template-columns: 52px auto 1fr auto 52px;
+  grid-template-rows: 48px 1fr 52px;
+  height: 100%;
+}
+
+header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+header h1 b {
+  color: var(--accent);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* the long label of the link to the sister site only fits on wide screens; below that it is just the icon (its tooltip says it) */
+@media (max-width: 1560px) {
+  #museum span {
+    display: none;
+  }
+}
+
+/* just above the phone layout the full name and the three labeled buttons only fit a bit closer together */
+@media (min-width: 761px) and (max-width: 860px) {
+  header {
+    gap: 6px;
+    padding: 0 12px;
+  }
+
+  header .btn {
+    padding: 7px 9px;
+  }
+}
+
+#rail {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+#drawer {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+#stage {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+#panel {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+#rail-right {
+  grid-column: 5;
+  grid-row: 2;
+}
+
+#footer {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+#footer strong {
+  color: var(--soft-text);
+  font-weight: 600;
+}
+
+/* ---- buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  font: 12px var(--mono);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.btn.strong {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.btn.strong:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn.soft {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* recording: the video button turns into the way to stop */
+.btn.recording {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Ko-fi button in the header, same look as Ko-fi's own widget but without its script */
+#kofi {
+  color: #fff;
+  font-weight: 700;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  background: #000;
+}
+
+#kofi img {
+  display: block;
+}
+
+#museum img {
+  display: block;
+  border-radius: 3px;
+}
+
+.chip {
+  padding: 6px 10px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  font: 12px var(--mono);
+  color: var(--soft-text);
+  background: var(--panel);
+}
+
+.chip:hover:not(:disabled) {
+  border-color: #6a6e77;
+  color: #fff;
+}
+
+.chip.on {
+  position: relative;
+  z-index: 1;
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: #fff;
+}
+
+.chip:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* a row of chips glued together (one choice, or a few toggles) */
+.group {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+  padding: 0 1px 1px 0;
+}
+
+.group .chip {
+  min-width: 0;
+  margin: 0 -1px -1px 0;
+  padding: 8px 4px;
+  border-radius: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* ---- icon rails (left and right) */
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 0;
+  padding: 8px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+#rail-right {
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+
+.ico {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #b9bcc3;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+
+/* only with a mouse: on touch screens the hover would stay on the last icon tapped */
+@media (hover: hover) {
+  .ico:hover {
+    background: var(--panel2);
+    color: #fff;
+  }
+}
+
+.ico.on {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: #fff;
+}
+
+/* a mark on the rail's outer edge next to the open one */
+.ico.on::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--accent);
+}
+
+#rail-right .ico.on::before {
+  left: auto;
+  right: -7px;
+}
+
+/* ---- drawers (left and right) */
+.drawer {
+  width: 336px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+#panel {
+  width: 324px;
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+
+.head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.head .num {
+  color: var(--muted);
+  font: 12px var(--mono);
+}
+
+.head .close {
+  margin-left: auto;
+  display: grid;
+  padding: 4px;
+  color: var(--muted);
+}
+
+.head .close:hover {
+  color: #fff;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: #34363c;
+  border-radius: 4px;
+}
+
+.section {
+  display: grid;
+  gap: 8px;
+  padding: 14px 12px 4px;
+}
+
+.section.pad-bottom {
+  padding-bottom: 14px;
+}
+
+.section > h3 {
+  margin: 0;
+  font: 600 11px var(--mono);
+  letter-spacing: 1.5px;
+  color: #b9bcc3;
+  text-transform: uppercase;
+}
+
+.section > small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.section > small strong {
+  color: var(--soft-text);
+}
+
+/* a label on the left, the control in the middle, the value on the right */
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.opt > span:first-child {
+  width: 78px;
+  flex: none;
+  color: var(--soft-text);
+}
+
+.opt output {
+  width: 40px;
+  flex: none;
+  text-align: right;
+  font: 11px var(--mono);
+  color: var(--muted);
+}
+
+input[type="color"] {
+  width: 34px;
+  height: 30px;
+  padding: 2px;
+  flex: none;
+  cursor: pointer;
+}
+
+/* ---- tiles: monsters (logo) and backgrounds (picture with the name below) */
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: max-content;
+  gap: 6px;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.tile:hover {
+  border-color: #6a6e77;
+}
+
+.tile.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.tile img,
+.tile .swatch {
+  display: block;
+  width: 100%;
+  height: auto; /* the img's height attribute would win over the aspect ratio */
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  background: #222;
+}
+
+/* character portraits: the artwork of the game's select screen (108 x 120), in a circle */
+#monster-list {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.tile.monster {
+  border-radius: 50%;
+}
+
+.tile.monster img {
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: transparent;
+  padding: 6%;
+}
+
+.tile .swatch {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.tile span {
+  display: block;
+  padding: 3px 5px;
+  font: 10px var(--mono);
+  color: var(--soft-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* monsters: the logo is the name; the bosses (no logo) show their name in the logo's place */
+.monster img {
+  object-fit: contain;
+  background: none;
+  padding: 2px 4px;
+}
+
+.monster.on {
+  background: var(--accent-bg);
+}
+
+.monster.text {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+}
+
+.monster.text span {
+  padding: 4px 10px;
+  font: 600 11px/1.25 var(--mono);
+  color: var(--text);
+  white-space: normal;
+  text-align: center;
+}
+
+/* ---- animation list */
+.anim-list {
+  display: grid;
+  gap: 3px;
+}
+
+.anim {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  width: 100%;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 12px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.anim:hover {
+  border-color: #6a6e77;
+  background: #23252a;
+}
+
+.anim.on {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.anim .name {
+  flex: 1;
+  min-width: 0;
+}
+
+/* the game id, in a column of its own */
+.anim .id {
+  flex: none;
+  min-width: 3.2em;
+  color: var(--muted);
+  font: 11px var(--mono);
+}
+
+.anim small {
+  flex: none;
+  color: var(--muted);
+  font: 10px var(--mono);
+}
+
+/* how it plays (loop, hold, layer, additive): "once" shows nothing */
+.anim .kind {
+  padding: 0 4px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  color: var(--soft-text);
+}
+
+/* the table isn't sure: a "?" after the name, and a guess dimmed */
+.anim .conf {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.anim.guess:not(.on) {
+  opacity: 0.55;
+}
+
+/* the description, under the picked one only (the others have it as a tooltip) */
+.anim .desc {
+  display: none;
+  flex-basis: 100%;
+  padding: 2px 0 1px calc(3.2em + 8px);
+  color: var(--soft-text);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.anim.on .desc {
+  display: block;
+}
+
+/* one chip per kind of animation, over the list */
+.anim-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.anim-filter[hidden] {
+  display: none;
+}
+
+.anim-filter .chip {
+  padding: 4px 7px;
+  font-size: 11px;
+}
+
+.anim-filter .chip small {
+  margin-left: 5px;
+  color: var(--muted);
+}
+
+.anim-group {
+  margin: 12px 0 6px;
+  color: var(--muted);
+  font: 600 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.anim-group:first-child {
+  margin-top: 0;
+}
+
+.empty {
+  padding: 20px 4px;
+  text-align: center;
+  color: var(--muted);
+  font: 12px var(--mono);
+}
+
+/* ---- keyboard shortcuts: keys on the left, what they do on the right */
+#keys {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 10px;
+  align-items: center;
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#keys dt {
+  display: flex;
+  gap: 4px;
+}
+
+#keys dd {
+  margin: 0;
+}
+
+kbd {
+  min-width: 22px;
+  padding: 1px 6px;
+  font: 600 11px/18px var(--mono);
+  text-align: center;
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+}
+
+/* ---- stage */
+#stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  touch-action: none;
+}
+
+/* short messages over the top of the stage (loading an animation, saving, recording) */
+#notice {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  font-size: 12px;
+  white-space: nowrap;
+  background: #17181bee;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+#notice:empty {
+  opacity: 0;
+}
+
+/* triangle and bone counter, on the stage's corner */
+#info {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  padding: 5px 9px;
+  font: 11px var(--mono);
+  color: var(--muted);
+  white-space: nowrap;
+  background: #111214cc;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+#info:empty {
+  display: none;
+}
+
+/* the picked monster's name (and costume), on the stage's top left corner */
+#monster-name {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  max-width: 55%;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--text);
+  text-shadow: 0 1px 3px #000c;
+  pointer-events: none;
+}
+
+#monster-name small {
+  display: block;
+  font: 11px var(--mono);
+  color: var(--muted);
+}
+
+#monster-name:empty {
+  display: none;
+}
+
+#info b,
+#model-stats b {
+  color: #e0e1e4;
+  font-weight: 600;
+}
+
+#model-stats:empty {
+  display: none;
+}
+
+/* ---- loading spinner where the monster goes */
+#loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+/* a dark disc behind the ring keeps it readable over busy stage pictures */
+.spinner {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: #17181bee;
+  border: 1px solid var(--border2);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+}
+
+.spinner::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.14);
+  border-top-color: var(--accent);
+  border-right-color: var(--accent);
+  animation: spin 0.9s linear infinite;
+}
+
+#loader-text {
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 3px;
+  background: #17181bee;
+  border: 1px solid var(--border2);
+  font: 12px var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner::before {
+    animation-duration: 2.4s;
+  }
+}
+
+/* ---- animation player: a bar at the bottom of the stage */
+#player {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: min(680px, calc(100% - 24px));
+  display: grid;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #17181bf2;
+  border: 1px solid var(--border2);
+}
+
+#player.collapsed {
+  display: none;
+}
+
+#player .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* previous / next animation, with its name between them */
+#player .row:first-child {
+  justify-content: center;
+}
+
+#anim-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  font: 600 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--soft-text);
+}
+
+.play {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+}
+
+.play:hover {
+  border-color: var(--accent);
+}
+
+.play svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  stroke: none;
+}
+
+/* playing: show the pause icon; paused: the play icon */
+#player .icon-play,
+#player.paused .icon-pause {
+  display: none;
+}
+
+#player.paused .icon-play {
+  display: block;
+}
+
+.step {
+  flex: none;
+  display: grid;
+  padding: 4px;
+  color: var(--muted);
+}
+
+.step:hover:not(:disabled) {
+  color: #fff;
+}
+
+.step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.step svg {
+  width: 16px;
+  height: 16px;
+}
+
+#frame-label {
+  flex: none;
+  min-width: 64px;
+  text-align: right;
+  font: 12px var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+#frame-label strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* playback speed: chips glued in a row */
+.vel {
+  flex: none;
+  display: flex;
+}
+
+.vel .chip {
+  margin-left: -1px;
+  padding: 6px 7px;
+  border-radius: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* sliders in the theme: thin track, round accent knob */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: #34363c;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: #34363c;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* with the player hidden, a small arrow at the bottom of the stage brings it back */
+#show-player {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  z-index: 5;
+  width: 32px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* only while the player is hidden by its button (not while there is no animation) */
+#player[hidden] ~ #show-player,
+#player:not(.collapsed) ~ #show-player {
+  display: none;
+}
+
+#show-player:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+#show-player svg {
+  stroke-width: 2.4;
+  filter: drop-shadow(0 1px 2px #000);
+}
+
+/* ---- showcase mode: only the stage, filling the screen; the camera slowly circles the monster */
+#showcase-exit {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 50;
+  width: 40px;
+  height: 40px;
+  display: none;
+  place-items: center;
+  padding: 0;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+  transition: opacity 0.4s ease;
+}
+
+#showcase-exit:hover {
+  color: var(--accent);
+}
+
+body.showcase #showcase-exit {
+  display: grid;
+}
+
+body.showcase #stage {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+body.showcase #app > :not(#stage),
+body.showcase #player,
+body.showcase #show-player,
+body.showcase #monster-name,
+body.showcase #info {
+  visibility: hidden;
+}
+
+/* idle for a moment: the exit button fades out too, leaving only the monster */
+body.showcase.idle #showcase-exit {
+  opacity: 0;
+}
+
+body.showcase.idle {
+  cursor: none;
+}
+
+/* ---------- phones ----------
+   Both rails become one bar at the bottom of the screen and the open drawer a sheet between the stage and that bar: the
+   stage shrinks and the monster stays whole above it. One drawer at a time (main.js closes the other). Lying down, the
+   sheet goes to the right of the stage. The same rule is in main.js (mobile). */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  html,
+  body {
+    font-size: 13px;
+  }
+
+  #app {
+    height: 100dvh;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 44px 1fr auto 52px;
+  }
+
+  header {
+    gap: 6px;
+    padding: 0 8px;
+  }
+
+  /* the full name in two lines: "Godzilla: Save the Earth" over "Model Viewer" */
+  header h1 {
+    font-size: 14px;
+    line-height: 1.15;
+  }
+
+  header h1 b {
+    display: block;
+  }
+
+  header .btn {
+    padding: 7px 9px;
+  }
+
+  header .btn span {
+    display: none;
+  }
+
+  #footer,
+  #info,
+  #keys-section {
+    display: none;
+  }
+
+  #stage {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  /* sheet: its height changes by dragging the bar on top or the title (main.js, sheet resize) */
+  #drawer,
+  #panel {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: auto;
+    height: min(var(--sheet, 46dvh), calc(100dvh - 216px));
+    overflow: hidden;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .drawer::before {
+    content: "";
+    flex: none;
+    align-self: center;
+    width: 40px;
+    height: 4px;
+    margin: 6px 0 0;
+    border-radius: 2px;
+    background: var(--border2);
+  }
+
+  .drawer > .head {
+    height: 40px;
+    touch-action: none;
+  }
+
+  /* the sheet closes downward, so its arrow points down */
+  #panel-close svg {
+    transform: rotate(90deg);
+  }
+
+  #drawer-close svg {
+    transform: rotate(-90deg);
+  }
+
+  /* tiles: three in a row when the sheet is wide enough */
+  .tiles {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  #monster-list {
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  }
+
+  #rail,
+  #rail-right {
+    grid-row: 4;
+    flex-direction: row;
+    padding: 0 6px;
+    padding-bottom: env(safe-area-inset-bottom);
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  #rail {
+    grid-column: 1;
+  }
+
+  #rail-right {
+    grid-column: 2;
+    border-left: 1px solid var(--border);
+  }
+
+  .ico.on::before,
+  #rail-right .ico.on::before {
+    left: 8px;
+    right: 8px;
+    top: -7px;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+  }
+
+  /* fields at 16 px: less than that and Safari zooms the page when they're tapped */
+  input,
+  select {
+    font-size: 16px;
+  }
+
+  #notice {
+    max-width: calc(100% - 24px);
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* the player leaves the monster and sits under the stage; the frame slider gets a row of its own */
+  #stage {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #scene {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+  }
+
+  #player {
+    position: static;
+    transform: none;
+    width: auto;
+    flex: none;
+    gap: 6px;
+    padding: 6px 8px;
+    border: 0;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+  }
+
+  #player .row:last-child {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  #player #frame {
+    order: -1;
+    flex-basis: 100%;
+    height: 22px;
+  }
+
+  #player #frame-label {
+    margin-right: auto;
+    text-align: left;
+  }
+
+  /* with a sheet open the player keeps only the frame controls (the animations are in their own tab) */
+  #app:has(.drawer:not([hidden])) #player .row:first-child {
+    display: none;
+  }
+
+  #show-player {
+    left: auto;
+    right: 6px;
+    transform: none;
+    width: 40px;
+    height: 36px;
+    bottom: 2px;
+  }
+
+  body.showcase #stage {
+    display: block;
+  }
+
+  body.showcase #scene {
+    height: 100%;
+  }
+}
+
+/* phone lying down: little height, the sheet goes to the right of the stage */
+@media (pointer: coarse) and (max-height: 520px) and (orientation: landscape) {
+  #app {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-rows: 40px 1fr 52px;
+  }
+
+  #drawer,
+  #panel {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    width: 320px;
+    height: auto;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  #rail,
+  #rail-right {
+    grid-row: 3;
+  }
+
+  #rail {
+    grid-column: 1 / 3;
+  }
+
+  #rail-right {
+    grid-column: 3;
+  }
+
+  .drawer::before {
+    display: none;
+  }
+
+  /* both drawers sit on the right here, so both arrows point right */
+  #panel-close svg {
+    transform: none;
+  }
+
+  #drawer-close svg {
+    transform: rotate(180deg);
+  }
+
+  #app:has(.drawer:not([hidden])) #stage {
+    grid-column: 1;
+  }
+}
+
+/* the pad buttons (□ △ ○ ✕) in a symbol font, so the four come out the same size */
+.pad {
+  font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif;
+  font-weight: 400;
+}
+
+/* ================= Digimon Rumble Arena look =================
+   Colours and shapes follow the game's interface (title/mainmenu.tim, option.tim): teal "DIGIMON" honeycomb, steel frames, navy
+   windows, gold lettering, pill buttons with a white outline (green / orange / purple). Not the game's sprites, just its look. */
+:root {
+  --dra-teal: #42a5ad; /* the hexagons' own colour in the game's picture */
+  --dra-teal-dark: #318484;
+  --dra-steel: #8fa7b6;
+  --dra-steel-dark: #5d7585;
+  --dra-navy: #061826;
+  --dra-gold: #f3c32a;
+  --dra-green: #0f9d58;
+  --dra-green-hi: #3fc983;
+  --dra-orange: #ee7722;
+  --dra-orange-hi: #ffa24d;
+  --dra-purple: #6a6bbd;
+  --dra-purple-hi: #9798e3;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* header: the two logos of the title screen side by side */
+#app {
+  grid-template-rows: 64px 1fr 52px;
+}
+
+header h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+header h1 img {
+  display: block;
+  width: auto;
+}
+
+header h1 .logo-digimon {
+  height: 40px;
+}
+
+/* "MODEL VIEWER" in the green of the select screen's "SELECT DIGIMON": every letter fades from bright green on its left to
+   almost black on its right edge (the game's picture goes (0,239,0) -> (0,41,0) inside each glyph) */
+header h1 .viewer-label {
+  display: inline-flex;
+  align-items: baseline;
+  margin-left: 4px;
+  font: 900 24px/1 "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+header h1 .viewer-label i {
+  padding: 0 1px;
+  font-style: normal;
+  color: transparent;
+  background: linear-gradient(90deg, #00ef00 0%, #00e700 30%, #00b500 58%, #007b00 82%, #002900 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(1px 1px 0 #001a00);
+}
+
+header h1 .viewer-label .gap {
+  width: 0.5em;
+}
+
+header h1 .logo-rumble {
+  height: 52px;
+  margin: -2px 0 -6px;
+  filter: drop-shadow(0 1px 2px #000a);
+}
+
+/* the list on the left, as in the select screen: each Digimon's face (24 px, shown at 3x) in a two-tone violet cell, and around the
+   picked one the orange "player 1" selector of the game (public/ui/select-frame.png, 32 px, shown at 3x = 96 px, no badge). The cells sit
+   30 px apart in the game (28 px cell + 2 px), so 90 px here, and the 96 px selector overlaps its neighbours */
+#monster-list {
+  grid-template-columns: repeat(auto-fill, 90px);
+  justify-content: center;
+  gap: 0;
+}
+
+.tile.monster {
+  --cell: #8463ce; /* the cell's outer line, then #39297b */
+  position: relative;
+  width: 90px;
+  height: 90px;
+  padding: 3px;
+  overflow: visible;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.tile.monster img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  padding: 6px;
+  object-fit: cover;
+  image-rendering: pixelated;
+  background: var(--dra-navy);
+  border-radius: 7px;
+}
+
+.tile.monster img.smooth {
+  image-rendering: auto;
+  object-fit: contain;
+}
+
+.tile.monster::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 3px solid var(--cell);
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 3px #39297b;
+  pointer-events: none;
+}
+
+.tile.monster:hover img {
+  filter: brightness(1.18);
+}
+
+.tile.monster.on {
+  border: 0;
+  box-shadow: none;
+}
+
+.tile.monster.on {
+  z-index: 1;
+}
+
+.tile.monster.on::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  background: url("/ui/select-frame.png") 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* the name on the stage is the game's own picture of it, at twice its size */
+#monster-name img {
+  display: block;
+  height: 44px;
+  width: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 2px #000c);
+}
+
+#monster-name small {
+  margin-top: 4px;
+}
+
+/* the big art of the Digimon, bottom right of the stage, over the viewer */
+#portrait.off {
+  display: none;
+}
+
+#portrait.crisp {
+  image-rendering: pixelated;
+}
+
+/* above the player bar; flush with the bottom corner when the stage is wide enough that the (centered) bar does not reach it */
+#stage {
+  container-type: inline-size;
+}
+
+@container (min-width: 1140px) {
+  #portrait {
+    bottom: 0;
+  }
+}
+
+#portrait {
+  position: absolute;
+  right: 8px;
+  bottom: 104px;
+  height: clamp(120px, 30vh, 240px);
+  width: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px #000a);
+  opacity: 0.96;
+}
+
+#stage:has(#player[hidden]) #portrait,
+#stage:has(#player.collapsed) #portrait {
+  bottom: 0;
+}
+
+body.showcase #portrait {
+  visibility: hidden;
+}
+
+/* the menus on both sides: the main menu's look */
+#panel,
+#drawer {
+  /* the main menu's picture: the hexagons that say DIGIMON, and on each side the dark layer with circles that shrink away from the
+     border (a black at 22% opacity, so the hexagons show through). tools/export_ui.py --menu cuts the three pieces */
+  background:
+    url("/ui/menu-edge-left.png") left top / auto repeat-y,
+    url("/ui/menu-edge-right.png") right top / auto repeat-y,
+    url("/ui/menu-tile.png") center top / auto repeat;
+  background-color: var(--dra-teal);
+  image-rendering: pixelated;
+  border-color: var(--dra-steel-dark);
+}
+
+/* the rails are that dark layer over the hexagons, with no circles */
+#rail,
+#rail-right {
+  background: linear-gradient(#00000038, #00000038), url("/ui/menu-tile.png") center top / auto repeat;
+  image-rendering: pixelated;
+  border-color: var(--dra-steel-dark);
+}
+
+#rail-right {
+  border-left: 3px solid var(--dra-steel);
+}
+
+#rail {
+  border-right: 3px solid var(--dra-steel);
+}
+
+#panel,
+#drawer {
+  border-left: 0;
+  color: #fff;
+}
+
+#drawer {
+  border-right: 0;
+}
+
+/* the animation list: the game's dark windows, the picked one an orange pill */
+#drawer .anim {
+  background: var(--dra-navy);
+  border: 2px solid var(--dra-steel);
+  border-radius: 8px;
+  color: #fff;
+}
+
+#drawer .anim:hover {
+  border-color: #fff;
+  background: #0b2a40;
+}
+
+#drawer .anim.on {
+  border-color: #fff;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100;
+}
+
+#drawer .anim .id,
+#drawer .anim small,
+#drawer .anim .desc {
+  color: #cfe3ea;
+}
+
+#drawer .anim.on .id,
+#drawer .anim.on small,
+#drawer .anim.on .desc {
+  color: #fff;
+}
+
+#drawer .anim .kind {
+  border-color: var(--dra-steel);
+  color: #e9fbfb;
+}
+
+#drawer .anim-group {
+  color: var(--dra-gold);
+  letter-spacing: 2px;
+  text-shadow: 0 2px 0 #00000088;
+}
+
+#drawer .anim-filter .chip small {
+  color: #fff;
+  opacity: 0.8;
+}
+
+#panel .head,
+#drawer .head {
+  height: 52px;
+  background: var(--dra-navy);
+  border-bottom: 4px solid var(--dra-steel);
+  box-shadow: inset 0 -2px 0 var(--dra-steel-dark);
+  color: var(--dra-gold);
+  font: 700 15px var(--mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 0 #3a2a00;
+}
+
+#panel .head .close,
+#drawer .head .close {
+  color: var(--dra-steel);
+}
+
+#panel .section > h3,
+#drawer .section > h3 {
+  color: var(--dra-gold);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 0 #00000088;
+}
+
+#panel .section > small,
+#drawer .section > small,
+#panel .opt > span:first-child,
+#drawer .opt > span:first-child {
+  color: #fff;
+  text-shadow: 0 1px 2px #0b4a52, 0 0 3px #0b4a52;
+}
+
+#panel .section > small strong,
+#drawer .section > small strong {
+  color: #fff;
+}
+
+#panel .opt output,
+#drawer .opt output,
+#panel #model-stats b,
+#drawer #model-stats b {
+  color: #fff;
+}
+
+#panel .scroll::-webkit-scrollbar-thumb,
+#drawer .scroll::-webkit-scrollbar-thumb {
+  background: var(--dra-steel);
+}
+
+/* pills: a white outline, a dark edge outside it, a lighter top */
+#panel .group,
+#drawer .group {
+  gap: 8px;
+  padding: 0;
+}
+
+#panel .chip,
+#drawer .chip,
+#panel .btn,
+#drawer .btn {
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px #0a3b2a, 0 3px 0 2px #0006;
+  color: #fff;
+  font: 700 12px var(--mono);
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 0 #0007;
+  background: linear-gradient(var(--dra-green-hi), var(--dra-green) 55%);
+}
+
+#panel .group .chip,
+#drawer .group .chip {
+  margin: 0;
+  padding: 8px 6px;
+  border-radius: 999px;
+}
+
+#panel .chip:hover:not(:disabled),
+#drawer .chip:hover:not(:disabled),
+#panel .btn:hover:not(:disabled),
+#drawer .btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+  color: #fff;
+  border-color: #fff;
+}
+
+#panel .chip.on,
+#drawer .chip.on {
+  border-color: #fff;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100, 0 3px 0 2px #0006;
+}
+
+#panel .btn,
+#drawer .btn {
+  width: 100%;
+  padding: 9px 14px;
+  white-space: normal;
+  text-align: center;
+  background: linear-gradient(var(--dra-purple-hi), var(--dra-purple) 55%);
+  box-shadow: 0 0 0 2px #23245a, 0 3px 0 2px #0006;
+}
+
+#panel .btn.strong,
+#drawer .btn.strong {
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100, 0 3px 0 2px #0006;
+  color: #fff;
+}
+
+#panel .btn.soft,
+#drawer .btn.soft {
+  background: linear-gradient(var(--dra-purple-hi), var(--dra-purple) 55%);
+  color: #fff;
+}
+
+#panel .chip:disabled,
+#drawer .chip:disabled,
+#panel .btn:disabled,
+#drawer .btn:disabled {
+  filter: grayscale(0.6);
+}
+
+#panel .section,
+#drawer .section {
+  gap: 12px;
+}
+
+/* the select and the colour well: the game's dark windows with a steel frame */
+#panel select,
+#drawer select,
+#panel input[type="color"],
+#drawer input[type="color"] {
+  background: var(--dra-navy);
+  color: #fff;
+  border: 2px solid var(--dra-steel);
+  border-radius: 8px;
+}
+
+#panel input[type="range"],
+#drawer input[type="range"] {
+  accent-color: var(--dra-orange);
+}
+
+/* right rail: round buttons, the open one an orange pill with the white outline */
+#rail-right .ico,
+#rail .ico {
+  color: #fff;
+  border-radius: 999px;
+}
+
+#rail-right .ico:hover,
+#rail .ico:hover {
+  background: #ffffff22;
+}
+
+#rail-right .ico.on,
+#rail .ico.on {
+  color: #fff;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #4a2100;
+}
+
+#rail-right .ico.on::before,
+#rail .ico.on::before {
+  display: none;
+}
+
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  #app {
+    grid-template-rows: 48px 1fr auto 52px;
+  }
+
+  header h1 .logo-digimon {
+    height: 26px;
+  }
+
+  header h1 .viewer-label {
+    display: none;
+  }
+
+  header h1 .logo-rumble {
+    height: 34px;
+    margin: 0;
+  }
+
+  #portrait {
+    height: 120px;
+    bottom: 72px;
+  }
+
+  #monster-name img {
+    height: 30px;
+  }
+}
+
+/* the game's cursor everywhere (the arrow's tip is at 9, 8 of the 57 x 57 picture) */
+:root {
+  --cursor: url("/cursor_digimon_rumble_arena.png") 9 8;
+}
+
+*,
+*::before,
+*::after {
+  cursor: var(--cursor), auto !important;
+}
+
+body.showcase.idle,
+body.showcase.idle * {
+  cursor: none !important;
+}
+
+/* ---- header and footer: the steel plates of the main menu (top and bottom of mainmenu.tim image 0), in its five colours: plate
+   #8ca5b5, highlight #adbdc6, edges #738c9c and #5a7384, window #001021. Each has a dark window with slanted ends: the logos
+   sit in the header's, the credits in the footer's. */
+header,
+#footer {
+  --plate: #8ca5b5;
+  --plate-hi: #adbdc6;
+  --plate-mid: #738c9c;
+  --plate-dark: #5a7384;
+  --window: #001021;
+  background: var(--plate);
+  color: #fff;
+}
+
+header {
+  gap: 14px;
+  border-bottom: 4px solid var(--plate-dark);
+  background: linear-gradient(var(--plate-hi), var(--plate-hi)) 0 5px / 100% 2px no-repeat, var(--plate);
+  box-shadow: inset 0 -2px 0 var(--plate-mid), inset 0 -4px 0 var(--plate), inset 0 -6px 0 var(--plate-hi);
+}
+
+#footer {
+  border-top: 4px solid var(--plate-dark);
+  background: linear-gradient(var(--plate-hi), var(--plate-hi)) 0 calc(100% - 5px) / 100% 2px no-repeat, var(--plate);
+  box-shadow: inset 0 2px 0 var(--plate-mid), inset 0 4px 0 var(--plate), inset 0 6px 0 var(--plate-hi);
+}
+
+/* the window: three nested hexagons, edge, edge, dark. --c is how far the slanted end reaches in */
+header h1,
+#footer .slot {
+  --c: 18px;
+  position: relative;
+  isolation: isolate;
+  background: var(--plate-mid);
+  clip-path: polygon(var(--c) 0, calc(100% - var(--c)) 0, 100% 50%, calc(100% - var(--c)) 100%, var(--c) 100%, 0 50%);
+}
+
+header h1::before,
+#footer .slot::before,
+header h1::after,
+#footer .slot::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  background: var(--plate-dark);
+  clip-path: polygon(calc(var(--c) - 1px) 0, calc(100% - var(--c) + 1px) 0, 100% 50%, calc(100% - var(--c) + 1px) 100%, calc(var(--c) - 1px) 100%, 0 50%);
+}
+
+header h1::after,
+#footer .slot::after {
+  inset: 4px;
+  background: var(--window);
+  clip-path: polygon(calc(var(--c) - 2px) 0, calc(100% - var(--c) + 2px) 0, 100% 50%, calc(100% - var(--c) + 2px) 100%, calc(var(--c) - 2px) 100%, 0 50%);
+}
+
+header h1 {
+  height: 52px;
+  padding: 0 34px 0 30px;
+  margin-left: -4px;
+}
+
+#footer {
+  padding: 0 12px;
+}
+
+#footer .slot {
+  --c: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  max-width: 100%;
+  padding: 5px 34px;
+  color: #cfe3ea;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+#footer strong {
+  color: #fff;
+}
+
+/* the header's buttons are the menu's pills too */
+header .btn {
+  padding: 7px 14px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px #23245a, 0 2px 0 2px #0006;
+  color: #fff;
+  font: 700 12px var(--mono);
+  text-shadow: 0 1px 0 #0007;
+  background: linear-gradient(var(--dra-purple-hi), var(--dra-purple) 55%);
+}
+
+header .btn:hover:not(:disabled) {
+  border-color: #fff;
+  filter: brightness(1.12);
+}
+
+header .btn.strong {
+  box-shadow: 0 0 0 2px #4a2100, 0 2px 0 2px #0006;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  color: #fff;
+}
+
+header #museum {
+  background: linear-gradient(var(--dra-green-hi), var(--dra-green) 55%);
+  box-shadow: 0 0 0 2px #0a3b2a, 0 2px 0 2px #0006;
+}
+
+header #kofi {
+  background: linear-gradient(#3b3b3b, #000 60%);
+  box-shadow: 0 0 0 2px #000, 0 2px 0 2px #0006;
+}
+
+/* the list: the cyan "2" selector of the select screen as the hover (the picked one keeps the orange) */
+.tile.monster:hover:not(.on)::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  background: url("/ui/hover-frame.png") 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.tile.monster:hover:not(.on) {
+  z-index: 1;
+}
+
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  #footer .slot {
+    padding: 4px 22px;
+    font-size: 10px;
+  }
+}
+
+/* ---- header on a phone: the window with the logos and a hamburger button; the four buttons open as a steel plate under it */
+#header-actions {
+  display: contents;
+}
+
+header .burger {
+  display: none;
+}
+
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  header {
+    position: relative;
+    z-index: 40;
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  header h1 {
+    height: 40px;
+    padding: 0 22px 0 20px;
+    --c: 14px;
+  }
+
+  header .burger {
+    display: inline-flex;
+    flex: none;
+    width: 44px;
+    height: 36px;
+    padding: 0;
+    background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+    box-shadow: 0 0 0 2px #4a2100, 0 2px 0 2px #0006;
+  }
+
+  header .burger svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+  }
+
+  #header-actions {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 8px;
+    flex-direction: column;
+    gap: 12px;
+    width: min(300px, calc(100vw - 16px));
+    padding: 14px;
+    background: var(--plate);
+    border: 4px solid var(--plate-dark);
+    box-shadow: inset 0 0 0 2px var(--plate-mid), 0 10px 24px #000b;
+  }
+
+  header.menu-open #header-actions {
+    display: flex;
+  }
+
+  header #header-actions .btn {
+    justify-content: flex-start;
+    width: 100%;
+    padding: 9px 14px;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.25;
+  }
+
+  header #header-actions .btn span {
+    display: inline;
+  }
+}
+
+@media (pointer: coarse) and (max-height: 520px) {
+  header h1 {
+    height: 30px;
+    padding: 0 18px;
+    --c: 11px;
+  }
+
+  header .burger {
+    height: 28px;
+  }
+}

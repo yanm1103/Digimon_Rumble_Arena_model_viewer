@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.vscode/
+.angularjs-lsp/
+
+# game files never go in this repo: the ISO, the extracted volume and the bundles
+*.iso
+*.VOL
+*.vol
+*.cmp
+*.bdp
+iso/
+extracted/
+__pycache__/
+
+# game files never go in this repo: the disc and the extracted /chara files
+*.bin
+*.cue
+*.tmd
+*.tim
+*.mop
+*.loop
+chara/
+rips/
