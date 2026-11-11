@@ -46,7 +46,7 @@ What the formats are:
 
 ## Interface pictures
 
-`python tools/export_ui.py --charasel <title/charasel.tim> --title <title/title.tim> --menu <title/mainmenu.tim>` cuts, from the disc's TIMs:
+`python tools/export_ui.py --charasel <title/charasel.tim> --title <title/title.tim> --menu <title/mainmenu.tim> --zascii <zascii.tim> --system <system/system.tim> --option <title/option.tim>` cuts, from the disc's TIMs:
 the two logos (`public/ui`: the RUMBLE ARENA picture is stored as two halves 48 empty columns apart, which are joined),
 the orange player-1 selector frame (`public/ui/select-frame.png`, the "1" badge painted out; shown around the picked Digimon) and the cyan player-2 one (`hover-frame.png`, the hover),
 each Digimon's name as the select screen writes it (`public/names`), and the face of each Digimon in the select screen's grid
@@ -54,7 +54,7 @@ each Digimon's name as the select screen writes it (`public/names`), and the fac
 bottom right of the stage. Names are the US ones (Gallantmon, Magnadramon, Beelzemon, Omnimon, MegaGargomon, Gatomon, Veemon,
 Reapermon): the decomp uses the Japanese ones. Both menus use the main menu's own background (`--menu`: `public/ui/menu-tile.png`, the hexagons that say DIGIMON, repeating every 229x40 px,
 rebuilt from the 512x480 picture, and `menu-edge-left/right.png`, the dark side layer with circles that shrink away from the border,
-9 px high, a black at 22% opacity); the steel header and footer (the main menu's top and bottom plates: five colours, a dark window with slanted ends), navy and pill buttons are CSS only. Calumon is not in the select screen: his picture
+9 px high, a black at 22% opacity); the system font of the game (`public/ui/font.png` + `src/gamefont.js`, from `zascii.tim`, used for the gold titles; the sheet has no parentheses, they are drawn in the exporter), the "MODEL VIEWER" title in the green alphabet of `system.tim` (`public/ui/logo-viewer.png`), the options screen's title banner (`public/ui/banner.png`, the text painted out and the steel recoloured to the menu's blue; frames the section titles), the steel header and footer (the main menu's top and bottom plates: five colours, a dark window with slanted ends), navy and pill buttons are CSS only. Calumon is not in the select screen: his picture
 (`public/logos/calumon.png`) was drawn by hand and his name is text.
 
 ## Other colors

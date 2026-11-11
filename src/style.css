@@ -1408,30 +1408,20 @@ header h1 .logo-digimon {
   height: 40px;
 }
 
-/* "MODEL VIEWER" in the green of the select screen's "SELECT DIGIMON": every letter fades from bright green on its left to
-   almost black on its right edge (the game's picture goes (0,239,0) -> (0,41,0) inside each glyph) */
+/* "MODEL VIEWER", written with the green alphabet of system.tim (public/ui/logo-viewer.png) */
 header h1 .viewer-label {
-  display: inline-flex;
-  align-items: baseline;
-  margin-left: 4px;
-  font: 900 24px/1 "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-header h1 .viewer-label i {
-  padding: 0 1px;
-  font-style: normal;
-  color: transparent;
-  background: linear-gradient(90deg, #00ef00 0%, #00e700 30%, #00b500 58%, #007b00 82%, #002900 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  display: block;
+  height: 30px;
+  width: auto;
+  margin-left: 6px;
+  image-rendering: pixelated;
   filter: drop-shadow(1px 1px 0 #001a00);
 }
 
-header h1 .viewer-label .gap {
-  width: 0.5em;
+@media (max-width: 1000px) {
+  header h1 .viewer-label {
+    display: none;
+  }
 }
 
 header h1 .logo-rumble {
@@ -1537,7 +1527,7 @@ header h1 .logo-rumble {
   container-type: inline-size;
 }
 
-@container (min-width: 1140px) {
+@container (min-width: 1200px) {
   #portrait {
     bottom: 0;
   }
@@ -1868,13 +1858,16 @@ body.showcase.idle * {
 /* ---- header and footer: the steel plates of the main menu (top and bottom of mainmenu.tim image 0), in its five colours: plate
    #8ca5b5, highlight #adbdc6, edges #738c9c and #5a7384, window #001021. Each has a dark window with slanted ends: the logos
    sit in the header's, the credits in the footer's. */
-header,
-#footer {
+:root {
   --plate: #8ca5b5;
   --plate-hi: #adbdc6;
   --plate-mid: #738c9c;
   --plate-dark: #5a7384;
   --window: #001021;
+}
+
+header,
+#footer {
   background: var(--plate);
   color: #fff;
 }
@@ -2087,4 +2080,425 @@ header .burger {
   header .burger {
     height: 28px;
   }
+}
+
+/* ---- the game's lettering. Titles: the system font of the game (zascii.tim), gold with every letter fading to dark on its right as in
+   "MODE SELECT" of the main menu; the letters are small masked boxes made by fadeLetters() in main.js. Pills: the white bold sans of
+   the menu's buttons ("1 PLAYER", "VS COMPUTER"). */
+.fade {
+  display: inline-block;
+  line-height: 14px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  filter: drop-shadow(1px 1px 0 #2a1d00);
+}
+
+.fade i {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  margin-right: 2px;
+  vertical-align: middle;
+  font-style: normal;
+  background: linear-gradient(90deg, #ffd54a 0%, #e8aa10 40%, #c08a10 75%, #8a6a12 100%);
+  -webkit-mask: url("/ui/font.png") calc(var(--x, 0px) * -1) 0 / auto 14px no-repeat;
+  mask: url("/ui/font.png") calc(var(--x, 0px) * -1) 0 / auto 14px no-repeat;
+}
+
+.fade i.sp {
+  width: 6px;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+}
+
+.fade i.fb {
+  width: auto;
+  height: auto;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  color: #e8aa10;
+  font: 700 13px/14px Arial, Helvetica, sans-serif;
+}
+
+#panel .section > h3.fade,
+#drawer .section > h3.fade {
+  line-height: 20px;
+}
+
+#panel .chip,
+#drawer .chip,
+#panel .btn,
+#drawer .btn,
+header .btn {
+  font: 700 11px/1.2 Arial, "Helvetica Neue", Helvetica, sans-serif;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ---- the icons of the two rails (sessions) are buttons too: green pills with a white outline, the open one orange */
+.rail {
+  gap: 8px;
+}
+
+#rail .ico,
+#rail-right .ico {
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(var(--dra-green-hi), var(--dra-green) 55%);
+  box-shadow: 0 0 0 2px #0a3b2a, 0 2px 0 2px #0006;
+}
+
+#rail .ico:hover,
+#rail-right .ico:hover {
+  background: linear-gradient(var(--dra-green-hi), var(--dra-green) 55%);
+  filter: brightness(1.12);
+}
+
+#rail .ico.on,
+#rail-right .ico.on {
+  border-color: #fff;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100, 0 2px 0 2px #0006;
+}
+
+/* ---- the animation player: the bottom plate of the main menu. Low wings at the sides, a raised middle with slanted ends, and in
+   it the dark window; here the window holds the animation's name and the controls sit on the plate as buttons. The silhouette is
+   --sil, drawn twice: dark (the edge) and, 3 px smaller, steel. */
+#player {
+  --sil: polygon(0 100%, 0 calc(100% - 38px), 10px calc(100% - 48px), 40px calc(100% - 48px), 96px 0,
+    calc(100% - 96px) 0, calc(100% - 40px) calc(100% - 48px), calc(100% - 10px) calc(100% - 48px), 100% calc(100% - 38px), 100% 100%);
+  bottom: 0;
+  width: min(760px, 100%);
+  gap: 6px;
+  padding: 10px 0 0;
+  background: none;
+  border: 0;
+  isolation: isolate;
+}
+
+#player::before,
+#player::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--plate-dark);
+  clip-path: var(--sil);
+}
+
+#player::after {
+  inset: 3px 3px 0;
+  background: linear-gradient(var(--plate-hi) 0 3px, var(--plate) 3px);
+}
+
+/* the window with the name */
+#player .row:first-child {
+  --c: 12px;
+  position: relative;
+  isolation: isolate;
+  justify-self: center;
+  width: min(100% - 220px, 440px);
+  height: 30px;
+  justify-content: center;
+  background: var(--plate-mid);
+  clip-path: polygon(var(--c) 0, calc(100% - var(--c)) 0, 100% 50%, calc(100% - var(--c)) 100%, var(--c) 100%, 0 50%);
+}
+
+#player .row:first-child::before,
+#player .row:first-child::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  background: var(--plate-dark);
+  clip-path: polygon(calc(var(--c) - 1px) 0, calc(100% - var(--c) + 1px) 0, 100% 50%, calc(100% - var(--c) + 1px) 100%, calc(var(--c) - 1px) 100%, 0 50%);
+}
+
+#player .row:first-child::after {
+  inset: 4px;
+  background: var(--window);
+  clip-path: polygon(calc(var(--c) - 2px) 0, calc(100% - var(--c) + 2px) 0, 100% 50%, calc(100% - var(--c) + 2px) 100%, calc(var(--c) - 2px) 100%, 0 50%);
+}
+
+#player .row:first-child .step {
+  color: #cfe3ea;
+}
+
+#anim-name.fade {
+  font: 900 12px/1 "Arial Black", "Segoe UI Black", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 1px;
+}
+
+/* the controls, on the plate */
+#player .row:last-child {
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px 2px;
+}
+
+#player .play,
+#player .row:last-child .step {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(var(--dra-green-hi), var(--dra-green) 55%);
+  box-shadow: 0 0 0 2px #0a3b2a, 0 2px 0 2px #0006;
+  opacity: 1;
+}
+
+#player .play {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100, 0 2px 0 2px #0006;
+}
+
+#player .play:hover,
+#player .row:last-child .step:hover:not(:disabled) {
+  filter: brightness(1.12);
+  border-color: #fff;
+  color: #fff;
+}
+
+#player .row:last-child .step:disabled {
+  filter: grayscale(0.7) brightness(0.9);
+}
+
+#player .play svg,
+#player .row:last-child .step svg {
+  width: 15px;
+  height: 15px;
+  stroke: #fff;
+}
+
+#player .play svg {
+  fill: #fff;
+  stroke: none;
+}
+
+/* the slider: a dark groove with a steel edge, an orange knob */
+#player input[type="range"]::-webkit-slider-runnable-track {
+  height: 10px;
+  background: var(--window);
+  border: 2px solid var(--plate-dark);
+  border-radius: 999px;
+  box-shadow: 0 1px 0 var(--plate-hi);
+}
+
+#player input[type="range"]::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+  border: 2px solid #fff;
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100;
+}
+
+#player input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: var(--window);
+  border: 2px solid var(--plate-dark);
+  border-radius: 999px;
+}
+
+#player input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  background: var(--dra-orange);
+}
+
+/* the frame counter: a little dark window */
+#player #frame-label {
+  min-width: 0;
+  padding: 4px 12px;
+  background: var(--window);
+  border: 2px solid var(--plate-dark);
+  border-radius: 999px;
+  color: #cfe3ea;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#player #frame-label strong {
+  color: #fff;
+}
+
+/* the speeds: small pills */
+#player .vel {
+  gap: 6px;
+}
+
+#player .vel .chip {
+  margin: 0;
+  padding: 5px 9px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  font: 700 11px/1.2 Arial, "Helvetica Neue", Helvetica, sans-serif;
+  text-shadow: 0 1px 0 #0007;
+  background: linear-gradient(var(--dra-green-hi), var(--dra-green) 55%);
+  box-shadow: 0 0 0 2px #0a3b2a, 0 2px 0 2px #0006;
+}
+
+#player .vel .chip.on {
+  background: linear-gradient(var(--dra-orange-hi), var(--dra-orange) 55%);
+  box-shadow: 0 0 0 2px #4a2100, 0 2px 0 2px #0006;
+}
+
+#player .vel .chip:hover {
+  filter: brightness(1.12);
+}
+
+/* with the player hidden: a small plate tab at the bottom of the stage */
+#show-player {
+  bottom: 0;
+  width: 56px;
+  height: 22px;
+  color: var(--plate-dark);
+  background: var(--plate);
+  border: 3px solid var(--plate-dark);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  opacity: 1;
+}
+
+#show-player:hover {
+  color: #fff;
+  background: var(--plate-mid);
+}
+
+#show-player svg {
+  filter: none;
+}
+
+/* phones: the player is a flat steel strip under the stage (same buttons, no raised middle) */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  #player {
+    width: auto;
+    padding: 8px 10px;
+    border-top: 4px solid var(--plate-dark);
+    background: linear-gradient(var(--plate-hi) 0 2px, var(--plate) 2px);
+  }
+
+  #player::before,
+  #player::after {
+    display: none;
+  }
+
+  #player .row:first-child {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  #player .row:last-child {
+    height: auto;
+    padding: 2px 0;
+    row-gap: 8px;
+  }
+
+  #show-player {
+    bottom: 2px;
+    border-bottom: 3px solid var(--plate-dark);
+    border-radius: 8px;
+  }
+}
+
+/* ---- loose texts (the hints under a section, the list of keys): a steel plate with a dark window and cut corners, like the footer's */
+.section > small,
+#keys {
+  --c: 10px;
+  position: relative;
+  isolation: isolate;
+  padding: 10px 16px;
+  background: var(--plate-mid);
+  color: #dff0f4;
+  clip-path: polygon(var(--c) 0, calc(100% - var(--c)) 0, 100% var(--c), 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, var(--c) 100%, 0 calc(100% - var(--c)), 0 var(--c));
+}
+
+.section > small::before,
+#keys::before,
+.section > small::after,
+#keys::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  background: var(--plate-dark);
+  clip-path: polygon(calc(var(--c) - 1px) 0, calc(100% - var(--c) + 1px) 0, 100% calc(var(--c) - 1px), 100% calc(100% - var(--c) + 1px), calc(100% - var(--c) + 1px) 100%, calc(var(--c) - 1px) 100%, 0 calc(100% - var(--c) + 1px), 0 calc(var(--c) - 1px));
+}
+
+.section > small::after,
+#keys::after {
+  inset: 4px;
+  background: var(--window);
+  clip-path: polygon(calc(var(--c) - 2px) 0, calc(100% - var(--c) + 2px) 0, 100% calc(var(--c) - 2px), 100% calc(100% - var(--c) + 2px), calc(100% - var(--c) + 2px) 100%, calc(var(--c) - 2px) 100%, 0 calc(100% - var(--c) + 2px), 0 calc(var(--c) - 2px));
+}
+
+#panel .section > small,
+#drawer .section > small {
+  color: #dff0f4;
+  line-height: 1.4;
+}
+
+#panel .section > small strong,
+#keys dd,
+#keys dt {
+  color: #fff;
+}
+
+#keys {
+  gap: 6px 12px;
+}
+
+/* phones: the button that hides the player goes to the left, and so does the tab that brings it back */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  #player #frame {
+    order: -2;
+  }
+
+  #player #hide-player {
+    order: -1;
+  }
+
+  #show-player {
+    left: 6px;
+    right: auto;
+  }
+}
+
+/* ---- section titles on the options screen's banner (public/ui/banner.png, 220x32): a steel frame with slanted ends and a dark window.
+   The two ends (52 px each) stay as they are and the middle stretches to the width of the section; the gold letters sit in the window,
+   where the teal pattern can't spoil them. */
+#panel .section > h3.fade,
+#drawer .section > h3.fade,
+#drawer .anim-group.fade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0;
+  border-style: solid;
+  border-width: 0 52px;
+  border-image: url("/ui/banner.png") 0 52 0 52 fill / 0 52px 0 52px / 0 stretch;
+  image-rendering: pixelated;
+  filter: none;
+}
+
+#drawer .anim-group.fade {
+  margin: 10px 0 6px;
+}
+
+#drawer .anim-group.fade:first-child {
+  margin-top: 0;
 }

@@ -15,6 +15,7 @@ const YAW = THREE.MathUtils.degToRad(35);
 const PITCH = THREE.MathUtils.degToRad(8);
 const FOVY = 30;
 
+import { GAME_FONT } from "./gamefont.js";
 const $ = (id) => document.getElementById(id);
 const canvas = $("scene");
 const selLight = $("light");
@@ -1500,6 +1501,37 @@ frameSlider.addEventListener("input", () => {
 
 // ---- showcase mode: the interface goes away and the camera slowly circles the monster. The shortcuts keep working
 // (H or Esc leaves); on touch screens a round button in the corner leaves, and fades out when nobody touches anything.
+// the game's gold titles, written with the game's own system font (public/ui/font.png, positions in gamefont.js): every letter is a
+// small box that shows its glyph through a mask and fades from gold on its left to dark on its right (.fade in style.css). The titles
+// of the drawers, the animation groups and the player's name are written by the code above, so a watcher wraps whatever shows up there.
+const FADE_TITLES = ".section > h3, .head > span:first-child, .anim-group, #anim-name";
+function fadeLetters(root) {
+  for (const el of root.querySelectorAll(FADE_TITLES)) {
+    if (el.firstElementChild?.tagName === "I" || !el.textContent.trim()) continue;
+    const text = el.textContent;
+    el.setAttribute("aria-label", text);
+    el.classList.add("fade");
+    el.replaceChildren(...[...text.toUpperCase()].map((ch) => {
+      const i = document.createElement("i");
+      i.setAttribute("aria-hidden", "true");
+      const glyph = GAME_FONT.glyphs[ch];
+      if (ch === " ") i.className = "sp";
+      else if (glyph) {
+        i.style.width = glyph[1] + "px";
+        i.style.setProperty("--x", glyph[0] + "px");
+      } else {
+        i.className = "fb"; // a character the game's font doesn't have
+        i.textContent = ch;
+      }
+      return i;
+    }));
+  }
+}
+for (const side of [$("drawer"), $("panel"), $("player")]) {
+  fadeLetters(side);
+  new MutationObserver(() => fadeLetters(side)).observe(side, { childList: true, subtree: true });
+}
+
 // phones: the header's buttons live in a menu behind the hamburger button (CSS); it closes on any pick, outside tap or Esc
 const header = document.querySelector("header");
 const menuToggle = $("menu-toggle");
