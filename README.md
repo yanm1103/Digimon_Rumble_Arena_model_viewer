@@ -57,6 +57,14 @@ rebuilt from the 512x480 picture, and `menu-edge-left/right.png`, the dark side 
 9 px high, a black at 22% opacity); the system font of the game (`public/ui/font.png` + `src/gamefont.js`, from `zascii.tim`, used for the gold titles; the sheet has no parentheses, they are drawn in the exporter), the "MODEL VIEWER" title in the green alphabet of `system.tim` (`public/ui/logo-viewer.png`), the options screen's title banner (`public/ui/banner.png`, the text painted out and the steel recoloured to the menu's blue; frames the section titles), the steel header and footer (the main menu's top and bottom plates: five colours, a dark window with slanted ends), navy and pill buttons are CSS only. Calumon is not in the select screen: his picture
 (`public/logos/calumon.png`) was drawn by hand and his name is text.
 
+## Interface sounds
+
+`python tools/export_sfx.py <sys_se>` cuts the game's menu sounds (`sys_se.vh` and `sys_se.vb`, in the decomp project's `assets/us/sound`) into
+`public/sfx/*.wav`: cursor (a Digimon or animation changes, an icon opens), confirm (a pick or a button), back (a drawer closes), step (a slider,
+the previous / next frame), pause and code (a picture or a video was saved). They are the game's `SOUND_MENU_*` effects 0x0F-0x15; the script says
+how a VAB is laid out and how the speed of each sound follows from its tone (about 16 kHz, and 7.1 kHz for pause and code). `src/sfx.js` plays them with Web Audio
+after the first click or key (browsers allow nothing before), and the About panel turns them off or sets their volume (remembered in this browser).
+
 ## Other colors
 
 Every character except Calumon has a second costume, "other colors": the game does not store a second texture, it tints every

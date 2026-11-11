@@ -4,8 +4,12 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { MONSTERS } from "./catalog.js";
 import { mergeGlb } from "./glbmerge.js";
 import { createArena } from "./arena.js";
+import { createSfx } from "./sfx.js";
 
 const BASE = import.meta.env.BASE_URL;
+// the game's menu sounds (src/sfx.js); on unless the visitor turned them off (About panel)
+const savedVolume = Number(recall("volume") ?? 100);
+const sfx = createSfx(BASE, recall("sound") !== "off", Number.isFinite(savedVolume) ? Math.max(0, Math.min(100, savedVolume)) / 100 : 1);
 
 // The PS1 does its color math straight on texture and vertex values, with no color space conversion. Turning off three.js
 // color management keeps the texture colors as they are in the game.
@@ -993,6 +997,7 @@ async function saveImage(transparent) {
   a.href = URL.createObjectURL(blob);
   a.download = `${who}_${slug(bgName)}${k > 1 ? `_${k}x` : ""}.png`;
   a.click();
+  sfx.play("code");
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
 }
 
@@ -1038,6 +1043,7 @@ function startRecording() {
     a.href = URL.createObjectURL(blob);
     a.download = `${rec.name}.${VIDEO_TYPE.startsWith("video/mp4") ? "mp4" : "webm"}`;
     a.click();
+    sfx.play("code");
     setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   };
   seek(0);
@@ -1484,6 +1490,7 @@ function showFrame() {
 }
 
 function setPlaying(on) {
+  if (on !== playing) sfx.play(on ? "confirm" : "pause");
   playing = on;
   player.classList.toggle("paused", !on);
   playButton.setAttribute("aria-label", on ? "Pause" : "Play");
@@ -1669,6 +1676,8 @@ window.addEventListener("keydown", (e) => {
   const shortcut = SHORTCUTS[e.key.toLowerCase()] ?? SHORTCUTS[e.code.match(/^Digit([1234])$/)?.[1]];
   if (shortcut) {
     shortcut();
+    const key = e.key.toLowerCase();
+    if (key !== "h") sfx.play("qwerasd".includes(key) ? "cursor" : "confirm");
     e.preventDefault();
     return;
   }
@@ -1678,7 +1687,48 @@ window.addEventListener("keydown", (e) => {
   else if (e.key === "ArrowLeft") step(-1);
   else if (e.key === "ArrowRight") step(1);
   else return;
+  if (e.key !== " ") sfx.play("step");
   e.preventDefault();
+});
+
+// ---- the game's menu sounds: its cursor, confirm and back, the step of an option and the pause (src/sfx.js). They come from clicks, keys
+// and sliders alike, so one listener each (in the capture phase, before the page's own handler changes what the button is).
+const soundGroup = $("sound-group");
+function setSound(on) {
+  sfx.on = on;
+  for (const chip of soundGroup.children) chip.classList.toggle("on", (chip.dataset.v === "on") === on);
+  remember("sound", on ? "on" : "off");
+}
+soundGroup.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (chip) setSound(chip.dataset.v === "on");
+});
+const volumeInput = $("volume");
+const volumeOut = $("v-volume");
+function setVolume(percent, save = true) {
+  sfx.volume = percent / 100;
+  volumeInput.value = percent;
+  volumeOut.textContent = `${percent}%`;
+  if (save) remember("volume", String(percent));
+}
+volumeInput.addEventListener("input", () => setVolume(Number(volumeInput.value)));
+document.addEventListener(
+  "click",
+  (e) => {
+    const el = e.target.closest?.("button, a.btn");
+    if (!el || el.id === "play") return; // the play button makes its sound in setPlaying
+    if (el.matches(".ico")) sfx.play(el.classList.contains("on") ? "back" : "cursor");
+    else if (el.matches(".close")) sfx.play("back");
+    else if (el.matches("#prev-anim, #next-anim, #prev-frame, #next-frame")) sfx.play("step");
+    else sfx.play("confirm");
+  },
+  true,
+);
+document.addEventListener("input", (e) => {
+  if (e.target.matches?.('input[type="range"]') && e.target.id !== "frame") sfx.play("step");
+});
+document.addEventListener("change", (e) => {
+  if (e.target.matches?.("select")) sfx.play("confirm");
 });
 
 // ---- loop
@@ -1739,6 +1789,8 @@ if (!savedLayers && oldMode) savedLayers = { mesh: oldMode !== "wire", wire: old
 for (const key in layerState) setLayer(key, savedLayers ? !!savedLayers[key] : layerState[key]);
 renderDrawers();
 setGrid(recall("grid") !== "off");
+setSound(sfx.on);
+setVolume(Math.round(sfx.volume * 100), false);
 setStagePart("lattice", recall("stage-lattice") !== "off");
 setStagePart("bands", recall("stage-bands") === "on");
 setStage(recall("stage") === "boss");
