@@ -1085,7 +1085,8 @@ const TABS = { monsters: "Digimon", anims: "Animations" };
 const PANELS = { model: "Model", scene: "Scene", light: "Lighting", photo: "Picture and video", about: "About" };
 const ui = {
   tab: recall("tab") in TABS ? recall("tab") : "monsters",
-  open: recall("drawer") !== "closed",
+  // first visit: open on a computer, closed on a phone (where it would cover the Digimon)
+  open: recall("drawer") ? recall("drawer") === "open" : !mobile.matches,
   pnl: recall("panel") ?? "",
 };
 if (!(ui.pnl in PANELS)) ui.pnl = "";

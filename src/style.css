@@ -1157,15 +1157,19 @@ body.showcase.idle {
     border-top: 1px solid var(--border);
   }
 
+  /* the handle to drag the sheet: a flat steel plate across the top (like the header and the footer), with the grip as a small dark
+     window in the middle */
   .drawer::before {
     content: "";
     flex: none;
-    align-self: center;
-    width: 40px;
-    height: 4px;
-    margin: 6px 0 0;
-    border-radius: 2px;
-    background: var(--border2);
+    align-self: stretch;
+    height: 18px;
+    background:
+      linear-gradient(var(--window), var(--window)) center / 40px 6px no-repeat,
+      linear-gradient(var(--plate-dark), var(--plate-dark)) center / 44px 10px no-repeat,
+      linear-gradient(var(--plate-hi), var(--plate-hi)) 0 0 / 100% 2px no-repeat,
+      var(--plate);
+    border-bottom: 2px solid var(--plate-mid);
   }
 
   .drawer > .head {
@@ -1605,6 +1609,14 @@ body.showcase #portrait {
 
 #rail {
   border-right: 3px solid var(--dra-steel);
+}
+
+/* phones: the rail is the bar at the bottom, and the open drawer above it has the same hexagons: a steel line between them */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 520px) {
+  #rail {
+    border-right: 0;
+    border-top: 3px solid var(--dra-steel);
+  }
 }
 
 #panel,
