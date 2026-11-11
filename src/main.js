@@ -1830,7 +1830,7 @@ setSound(sfx.on);
 setVolume(Math.round(sfx.volume * 100), false);
 setStagePart("lattice", recall("stage-lattice") !== "off");
 setStagePart("bands", recall("stage-bands") === "on");
-setStage(recall("stage") === "boss");
+setStage(recall("stage") !== "plain"); // the Boss arena on the first visit
 setPortraitOn(recall("portrait") !== "off", false);
 setPortraitSmooth(recall("portrait-filter") !== "off", false);
 setShading(shading);
